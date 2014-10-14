@@ -1,4 +1,14 @@
 {
+    "name": "wyrihaximus/react-guzzle-ring",
+    "description": "Asyncronous GuzzleRing adapter powered by react/http-client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cees-Jan Kiewiet",
+            "email": "ceesjank@gmail.com",
+            "homepage": "http://wyrihaximus.net/"
+        }
+    ],
     "require": {
         "guzzlehttp/ring": "dev-master",
         "react/http-client": "0.4.*"
