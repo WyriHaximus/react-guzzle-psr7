@@ -1,0 +1,11 @@
+{
+    "require": {
+        "guzzlehttp/ring": "dev-master",
+        "react/http-client": "0.4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "WyriHaximus\\React\\Guzzle\\Ring\\Client\\": "src/"
+        }
+    }
+}
