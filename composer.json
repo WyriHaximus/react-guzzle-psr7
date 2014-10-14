@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "guzzlehttp/ring": "dev-master",
+        "guzzlehttp/ring": "~1.0",
         "react/http-client": "0.4.*"
     },
     "require-dev": {
