@@ -1,17 +1,17 @@
 <?php
 
-namespace WyriHaximus\React\Guzzle\Ring\Client;
+namespace WyriHaximus\React\RingPHP\Client;
 
-//use GuzzleHttp\Ring\Future;
-
+use GuzzleHttp\Ring\Core;
+use GuzzleHttp\Ring\Future\FutureArray;
 use React\HttpClient\Response;
+use React\Promise\Deferred;
 
 class HttpClientAdapter
 {
-    public function __construct(array $options = [])
+    public function __construct($loop)
     {
-
-        $this->loop = \React\EventLoop\Factory::create();
+        $this->loop = $loop;
 
         $dnsResolverFactory = new \React\Dns\Resolver\Factory();
         $dnsResolver = $dnsResolverFactory->createCached('8.8.8.8', $this->loop);
@@ -23,37 +23,33 @@ class HttpClientAdapter
 
     public function __invoke(array $request)
     {
+        $deferred = new Deferred();
+
         $body = '';
         $httpResponse = null;
 
-        $httpRequest = $this->client->request('GET', 'http://127.0.0.1:8000/');
+        $httpRequest = $this->client->request($request['http_method'], $request['url']);
         $httpRequest->on('response', function (Response $response) use (&$body, &$httpResponse) {
             $httpResponse = $response;
             $response->on('data', function ($data) use (&$body) {
                 $body .= $data;
             });
         });
-        $httpRequest->on('error', function($error) use ($request) {
-            $then = $request['then'];
-            $then($error);
-        });
-        $httpRequest->on('end', function() use (&$done, &$body, $request, &$httpResponse) {
-            $then = $request['then'];
-            if ($httpResponse === null) {
-                $then($httpResponse);
-                $then($body);
-                return;
-            }
-            $then([
+        $httpRequest->on('end', function() use (&$done, &$body, $request, &$httpResponse, $deferred) {
+            $response = [
                 'body' => $body,
                 'headers' => $httpResponse->getHeaders(),
                 'status' => $httpResponse->getCode(),
                 'reason' => $httpResponse->getReasonPhrase(),
-            ]);
+            ];
+
+            Core::rewindBody($response);
+
+            $deferred->resolve($response);
         });
         $httpRequest->end();
 
-        $this->loop->run();
+        return new FutureArray($deferred->promise());
     }
 
 }

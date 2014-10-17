@@ -10,8 +10,9 @@
         }
     ],
     "require": {
-        "guzzlehttp/ring": "~1.0",
-        "react/http-client": "0.4.*"
+        "guzzlehttp/ringphp": "~1.0",
+        "react/http-client": "0.4.*",
+        "guzzlehttp/guzzle": "~5.0"
     },
     "require-dev": {
         "satooshi/php-coveralls": "~0.6",
@@ -20,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "WyriHaximus\\React\\Guzzle\\Ring\\Client\\": "src/"
+            "WyriHaximus\\React\\RingPHP\\Client\\": "src/"
         }
     }
 }
