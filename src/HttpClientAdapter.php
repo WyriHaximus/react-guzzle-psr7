@@ -1,11 +1,10 @@
 <?php
 
-namespace WyriHaximus\React\RingPHP\Client;
+namespace WyriHaximus\React\RingPHP;
 
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\FutureArray;
-use React\HttpClient\Response;
-use React\Promise\Deferred;
+use WyriHaximus\React\RingPHP\HttpClient\Request;
 
 class HttpClientAdapter
 {
@@ -23,33 +22,8 @@ class HttpClientAdapter
 
     public function __invoke(array $request)
     {
-        $deferred = new Deferred();
-
-        $body = '';
-        $httpResponse = null;
-
-        $httpRequest = $this->client->request($request['http_method'], $request['url']);
-        $httpRequest->on('response', function (Response $response) use (&$body, &$httpResponse) {
-            $httpResponse = $response;
-            $response->on('data', function ($data) use (&$body) {
-                $body .= $data;
-            });
-        });
-        $httpRequest->on('end', function() use (&$done, &$body, $request, &$httpResponse, $deferred) {
-            $response = [
-                'body' => $body,
-                'headers' => $httpResponse->getHeaders(),
-                'status' => $httpResponse->getCode(),
-                'reason' => $httpResponse->getReasonPhrase(),
-            ];
-
-            Core::rewindBody($response);
-
-            $deferred->resolve($response);
-        });
-        $httpRequest->end();
-
-        return new FutureArray($deferred->promise());
+        $httpRequest = new Request($request, $this->client, $this->loop);
+        return new FutureArray($httpRequest->send());
     }
 
 }
