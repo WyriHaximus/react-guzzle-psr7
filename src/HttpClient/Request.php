@@ -89,6 +89,7 @@ class Request
             'stream' => false,
             'connect_timeout' => 0,
             'timeout' => 0,
+            'delay' => 0,
         ],
     ];
 
@@ -106,7 +107,6 @@ class Request
     public function __construct($request, ReactHttpClient $httpClient, LoopInterface $loop, ProgressInterface $progress = null)
     {
         $this->request = array_replace_recursive($this->requestDefaults, $request);
-        //var_export($this->request);die();
         $this->httpClient = $httpClient;
         $this->loop = $loop;
         $this->messageFactory = new MessageFactory();
@@ -125,6 +125,18 @@ class Request
     {
         $this->deferred = new Deferred();
 
+        $this->loop->addTimer((int)$this->request['client']['delay'] / 1000, function() {
+            $this->tickRequest();
+        });
+
+        return $this->deferred->promise();
+    }
+
+    /**
+     *
+     */
+    protected function tickRequest()
+    {
         $this->loop->futureTick(function () {
             $request = $this->setupRequest();
             $this->setupListeners($request);
@@ -133,8 +145,6 @@ class Request
             $request->end((string)$this->request['body']);
             $this->setRequestTimeout($request);
         });
-
-        return $this->deferred->promise();
     }
 
     /**
