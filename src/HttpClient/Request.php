@@ -104,8 +104,12 @@ class Request
      * @param LoopInterface $loop
      * @param ProgressInterface $progress
      */
-    public function __construct($request, ReactHttpClient $httpClient, LoopInterface $loop, ProgressInterface $progress = null)
-    {
+    public function __construct(
+        array $request,
+        ReactHttpClient $httpClient,
+        LoopInterface $loop,
+        ProgressInterface $progress = null
+    ) {
         $this->request = array_replace_recursive($this->requestDefaults, $request);
         $this->httpClient = $httpClient;
         $this->loop = $loop;
@@ -125,9 +129,12 @@ class Request
     {
         $this->deferred = new Deferred();
 
-        $this->loop->addTimer((int)$this->request['client']['delay'] / 1000, function() {
-            $this->tickRequest();
-        });
+        $this->loop->addTimer(
+            (int)$this->request['client']['delay'] / 1000,
+            function () {
+                $this->tickRequest();
+            }
+        );
 
         return $this->deferred->promise();
     }
@@ -197,9 +204,12 @@ class Request
     public function setConnectionTimeout(HttpRequest $request)
     {
         if ($this->request['client']['connect_timeout'] > 0) {
-            $this->connectionTimer = $this->loop->addTimer($this->request['client']['connect_timeout'], function () use ($request) {
-                $request->closeError(new \Exception('Connection time out'));
-            });
+            $this->connectionTimer = $this->loop->addTimer(
+                $this->request['client']['connect_timeout'],
+                function () use ($request) {
+                    $request->closeError(new \Exception('Connection time out'));
+                }
+            );
         }
     }
 
@@ -209,9 +219,12 @@ class Request
     public function setRequestTimeout(HttpRequest $request)
     {
         if ($this->request['client']['timeout'] > 0) {
-            $this->requestTimer = $this->loop->addTimer($this->request['client']['timeout'], function () use ($request) {
-                $request->close(new \Exception('Transaction time out'));
-            });
+            $this->requestTimer = $this->loop->addTimer(
+                $this->request['client']['timeout'],
+                function () use ($request) {
+                    $request->close(new \Exception('Transaction time out'));
+                }
+            );
         }
     }
 
@@ -338,7 +351,7 @@ class Request
             return;
         }
         $request['url'] = $location;
-        (new Request($request, $this->httpClient, $this->loop))->send()->then(function($response) {
+        (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
         });
     }

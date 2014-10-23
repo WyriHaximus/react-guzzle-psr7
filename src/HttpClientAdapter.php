@@ -25,5 +25,4 @@ class HttpClientAdapter
         $httpRequest = new Request($request, $this->client, $this->loop);
         return new FutureArray($httpRequest->send());
     }
-
 }
