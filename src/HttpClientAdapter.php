@@ -14,12 +14,36 @@ use WyriHaximus\React\RingPHP\HttpClient\RequestFactory;
 class HttpClientAdapter
 {
     /**
+     * @var LoopInterface
+     */
+    protected $loop;
+
+    /**
+     * @var DnsResolver
+     */
+    protected $dnsResolver;
+
+    /**
+     * @var HttpClient
+     */
+    protected $httpClient;
+
+    /**
+     * @var RequestFactory
+     */
+    protected $requestFactory;
+
+    /**
      * @param LoopInterface $loop
      * @param HttpClient $httpClient
      * @param DnsResolver $dnsResolver
      */
-    public function __construct(LoopInterface $loop, HttpClient $httpClient = null, DnsResolver $dnsResolver = null, RequestFactory $requestFactory = null)
-    {
+    public function __construct(
+        LoopInterface $loop,
+        HttpClient $httpClient = null,
+        DnsResolver $dnsResolver = null,
+        RequestFactory $requestFactory = null
+    ) {
         $this->loop = $loop;
 
         $this->setDnsResolver($dnsResolver);
@@ -93,8 +117,7 @@ class HttpClientAdapter
 
     public function __invoke(array $request)
     {
-        $httpRequest = $this->requestFactory->create
-        ($request, $this->client, $this->loop);
+        $httpRequest = $this->requestFactory->create($request, $this->httpClient, $this->loop);
         return new FutureArray($httpRequest->send());
     }
 }
