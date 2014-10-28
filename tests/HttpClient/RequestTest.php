@@ -28,7 +28,13 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertInstanceOf('React\Promise\PromiseInterface', $request->send());
 
-		Phake::verify($loop)->addTimer(0, $this->isType('callable'));
+        Phake::inOrder(
+            Phake::verify($loop)->addTimer(0, $this->callback(function($callback) {
+                $callback();
+                return true;
+            })),
+            Phake::verify($request)->tickRequest()
+        );
 	}
 
 	public function testSetConnectionTimeout() {
