@@ -44,7 +44,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 		$request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
         Phake::when($request)->setupRequest()->thenCallparent();
-        Phake::when($request)->setupListeners($httpRequest)->thenReturn(null);
+        Phake::when($request)->setupListeners($httpRequest)->thenCallParent();
         Phake::when($request)->setConnectionTimeout($httpRequest)->thenReturn(null);
 
 		$this->assertInstanceOf('React\Promise\PromiseInterface', $request->send());
@@ -64,6 +64,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
                 'voer' => 'bar;bor;ber',
             ]),
             Phake::verify($request)->setupListeners($httpRequest),
+            Phake::verify($httpRequest, Phake::times(4))->on($this->isType('string'), $this->isType('callable')),
             Phake::verify($request)->setConnectionTimeout($httpRequest)
         );
 	}
