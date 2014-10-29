@@ -159,12 +159,11 @@ class Request
      */
     protected function setupRequest()
     {
-        $request = $this->request;
         $headers = [];
-        foreach ($request['headers'] as $key => $values) {
+        foreach ($this->request['headers'] as $key => $values) {
             $headers[$key] = implode(';', $values);
         }
-        return $this->httpClient->request($request['http_method'], $request['url'], $headers);
+        return $this->httpClient->request($this->request['http_method'], $this->request['url'], $headers);
     }
 
     /**
