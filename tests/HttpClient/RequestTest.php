@@ -19,12 +19,22 @@ use Phake;
 class RequestTest extends \PHPUnit_Framework_TestCase {
 
 	public function testSend() {
-		$requestArray = [];
+		$requestArray = [
+            'http_method' => 'GET',
+            'url' => 'http://example.com/',
+            'headers' => [],
+            'body' => 'foo:bar',
+        ];
 
 		$loop = Phake::mock('React\EventLoop\LoopInterface');
 
+        $httpRequest = Phake::mock('React\HttpClient\Request');
+        Phake::when($httpRequest)->end('foo:bar')->thenReturn(null);
 		$client = Phake::mock('React\HttpClient\Client');
 		$request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
+        Phake::when($request)->setupRequest()->thenReturn($httpRequest);
+        Phake::when($request)->setupListeners($httpRequest)->thenReturn(null);
+        Phake::when($request)->setConnectionTimeout($httpRequest)->thenReturn(null);
 
 		$this->assertInstanceOf('React\Promise\PromiseInterface', $request->send());
 
@@ -33,7 +43,14 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
                 $callback();
                 return true;
             })),
-            Phake::verify($request)->tickRequest()
+            Phake::verify($request)->tickRequest(),
+            Phake::verify($loop)->futureTick($this->callback(function($callback) {
+                $callback();
+                return true;
+            })),
+            Phake::verify($request)->setupRequest(),
+            Phake::verify($request)->setupListeners($httpRequest),
+            Phake::verify($request)->setConnectionTimeout($httpRequest)
         );
 	}
 
