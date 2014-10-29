@@ -22,7 +22,13 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 		$requestArray = [
             'http_method' => 'GET',
             'url' => 'http://example.com/',
-            'headers' => [],
+            'headers' => [
+                'voer' => [
+                    'bar',
+                    'bor',
+                    'ber',
+                ],
+            ],
             'body' => 'foo:bar',
         ];
 
@@ -30,9 +36,14 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
         $httpRequest = Phake::mock('React\HttpClient\Request');
         Phake::when($httpRequest)->end('foo:bar')->thenReturn(null);
+
 		$client = Phake::mock('React\HttpClient\Client');
+        Phake::when($client)->request($requestArray['http_method'], $requestArray['url'], [
+            'voer' => 'bar;bor;ber',
+        ])->thenReturn($httpRequest);
+
 		$request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
-        Phake::when($request)->setupRequest()->thenReturn($httpRequest);
+        Phake::when($request)->setupRequest()->thenCallparent();
         Phake::when($request)->setupListeners($httpRequest)->thenReturn(null);
         Phake::when($request)->setConnectionTimeout($httpRequest)->thenReturn(null);
 
@@ -49,6 +60,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
                 return true;
             })),
             Phake::verify($request)->setupRequest(),
+            Phake::verify($client)->request($requestArray['http_method'], $requestArray['url'], [
+                'voer' => 'bar;bor;ber',
+            ]),
             Phake::verify($request)->setupListeners($httpRequest),
             Phake::verify($request)->setConnectionTimeout($httpRequest)
         );
