@@ -18,6 +18,7 @@ use React\HttpClient\Request as HttpRequest;
 use React\HttpClient\Response as HttpResponse;
 use React\Promise\Deferred;
 use React\Stream\Stream;
+use Exception;
 
 /**
  * Class Request
@@ -346,12 +347,14 @@ class Request
         $request = $this->request;
         $request['client']['redirect']['max']--;
         if ($request['client']['redirect']['max'] <= 0) {
-            $this->deferred->reject();
+            $this->deferred->reject(new Exception('Exceeded maximum redirects'));
             return;
         }
         $request['url'] = $location;
         (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
+        }, function($error) {
+            $this->deferred->reject($error);
         });
     }
 }
