@@ -350,6 +350,11 @@ class Request
             $this->deferred->reject(new Exception('Exceeded maximum redirects'));
             return;
         }
+        if ($request['client']['redirect']['referer']) {
+            $request['headers']['Referer'] = [
+                $request['url'],
+            ];
+        }
         $request['url'] = $location;
         (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
