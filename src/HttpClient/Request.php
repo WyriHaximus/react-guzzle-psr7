@@ -118,10 +118,11 @@ class Request
 
         if ($progress instanceof ProgressInterface) {
             $this->progress = $progress;
-        } else if (isset($this->request['client']['progress']) && is_callable($this->request['client']['progress'])) {
+        } elseif (isset($this->request['client']['progress']) && is_callable($this->request['client']['progress'])) {
             $this->progress = new Progress($this->request['client']['progress']);
         } else {
-            $this->progress = new Progress(function() {});
+            $this->progress = new Progress(function () {
+            });
         }
     }
 
@@ -368,7 +369,7 @@ class Request
         $request['url'] = $location;
         (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
-        }, function($error) {
+        }, function ($error) {
             $this->deferred->reject($error);
         });
     }
