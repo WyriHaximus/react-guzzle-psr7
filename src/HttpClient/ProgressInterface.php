@@ -15,23 +15,31 @@ use React\HttpClient\Response as HttpResponse;
 /**
  * Interface ProgressInterface
  * @package WyriHaximus\React\Guzzle\HttpClient
- * @implements \ArrayAccess
  */
 interface ProgressInterface
 {
     /**
-     * @param string $eventName
-     * @return Progress
+     * @param callable $callback
      */
-    public function setEvent($eventName);
+    public function setCallback(callable $callback);
 
     /**
-     * @return Progress
+     * @param HttpResponse $response
      */
     public function onResponse(HttpResponse $response);
 
     /**
-     * @return Progress
+     * @param string $body
+     */
+    public function onSending($body);
+
+    /**
+     *
+     */
+    public function onSent();
+
+    /**
+     * @param string $data
      */
     public function onData($data);
 }
