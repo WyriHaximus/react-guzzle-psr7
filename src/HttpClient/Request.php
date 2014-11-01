@@ -118,8 +118,10 @@ class Request
 
         if ($progress instanceof ProgressInterface) {
             $this->progress = $progress;
+        } else if (isset($this->request['client']['progress']) && is_callable($this->request['client']['progress'])) {
+            $this->progress = new Progress($this->request['client']['progress']);
         } else {
-            $this->progress = new Progress();
+            $this->progress = new Progress(function() {});
         }
     }
 
@@ -149,6 +151,8 @@ class Request
             $request = $this->setupRequest();
             $this->setupListeners($request);
 
+            $this->progress->onSending($this->request['body']);
+
             $this->setConnectionTimeout($request);
             $request->end((string)$this->request['body']);
             $this->setRequestTimeout($request);
@@ -176,6 +180,12 @@ class Request
             'headers-written',
             function () {
                 $this->onHeadersWritten();
+            }
+        );
+        $request->on(
+            'drain',
+            function () {
+                $this->progress->onSent();
             }
         );
         $request->on(
@@ -251,7 +261,7 @@ class Request
             );
         }
 
-        $this->deferred->progress($this->progress->setEvent('response')->onResponse($response));
+        $this->progress->onResponse($response);
 
         $this->httpResponse = $response;
     }
@@ -287,7 +297,7 @@ class Request
             $this->buffer .= $data;
         }
 
-        $this->deferred->progress($this->progress->setEvent('data')->onData($data));
+        $this->progress->onData($data);
     }
 
     /**

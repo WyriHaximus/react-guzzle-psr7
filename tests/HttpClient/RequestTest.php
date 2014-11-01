@@ -64,7 +64,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
                 'voer' => 'bar;bor;ber',
             ]),
             Phake::verify($request)->setupListeners($httpRequest),
-            Phake::verify($httpRequest, Phake::times(4))->on($this->isType('string'), $this->isType('callable')),
+            Phake::verify($httpRequest, Phake::times(5))->on($this->isType('string'), $this->isType('callable')),
             Phake::verify($request)->setConnectionTimeout($httpRequest)
         );
 	}
@@ -106,5 +106,4 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
 		Phake::verify($loop)->addTimer(321, $this->isType('callable'));
 	}
-    
 }

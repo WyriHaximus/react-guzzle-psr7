@@ -16,42 +16,43 @@ use React\HttpClient\Response as HttpResponse;
  * Class Progress
  * @package WyriHaximus\React\Guzzle\HttpClient
  */
-class Progress implements ProgressInterface, \ArrayAccess
+class Progress implements ProgressInterface
 {
-    private $currentSize = 0;
-    private $fullSize;
+    private $receiveCurrentSize = 0;
+    private $receiveFullSize = 0;
+    private $sendCurrentSize = 0;
+    private $sendFullSize = 0;
     private $response;
     private $data;
     private $event;
+    private $callback;
 
-    /**
-     * @return bool
-     */
-    public function isFullSizeKnown()
+    public function __construct(callable $callback)
     {
-        return !($this->fullSize === null);
+        $this->callback = $callback;
     }
 
     /**
-     * @return float|int
-     */
-    public function getCompletePercentage()
-    {
-        if (!$this->isFullSizeKnown() || $this->currentSize == 0) {
-            return 0;
-        }
-
-        $bit = $this->fullSize / 100;
-        return $this->currentSize / $bit;
-    }
-
-    /**
-     * @param $eventName
+     * @param string $body
      * @return $this
      */
-    public function setEvent($eventName)
+    public function onSending($body)
     {
-        $this->event = $eventName;
+        $this->sendFullSize = strlen($body);
+
+        $this->callCallback();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function onSent()
+    {
+        $this->sendCurrentSize = $this->sendFullSize;
+
+        $this->callCallback();
 
         return $this;
     }
@@ -65,8 +66,10 @@ class Progress implements ProgressInterface, \ArrayAccess
         $this->response = $response;
         $headers = $this->response->getHeaders();
         if (isset($headers['Content-Length'])) {
-            $this->fullSize = $headers['Content-Length'];
+            $this->receiveFullSize = $headers['Content-Length'];
         }
+
+        $this->callCallback();
 
         return $this;
     }
@@ -78,61 +81,16 @@ class Progress implements ProgressInterface, \ArrayAccess
     public function onData($data)
     {
         $this->data = $data;
-        $this->currentSize += strlen($this->data);
+        $this->receiveCurrentSize += strlen($this->data);
+
+        $this->callCallback();
 
         return $this;
     }
 
-    /**
-     * \ArrayAccess
-     */
-
-    /**
-     * @param mixed $offset
-     * @return bool
-     */
-    public function offsetExists($offset)
+    protected function callCallback()
     {
-        if (in_array($offset, [
-            'event',
-            'response',
-            'data',
-            'currentSize',
-            'fullSize',
-        ])) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param mixed $offset
-     * @return null|mixed
-     */
-    public function offsetGet($offset)
-    {
-        if ($this->offsetExists($offset)) {
-            return $this->{$offset};
-        }
-
-        return null;
-    }
-
-    /**
-     * @param mixed $offset
-     * @param mixed $value
-     */
-    public function offsetSet($offset, $value)
-    {
-
-    }
-
-    /**
-     * @param mixed $offset
-     */
-    public function offsetUnset($offset)
-    {
-
+        $callback = $this->callback;
+        $callback($this->receiveFullSize, $this->receiveCurrentSize, $this->sendFullSize, $this->sendCurrentSize);
     }
 }
