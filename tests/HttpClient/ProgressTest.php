@@ -25,35 +25,55 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $i = 0;
         $callbackFired = false;
 
-        (new Progress(function($a, $b, $c, $d) use (&$callbackFired, &$i) {
-            switch($i) {
-                case 0:
-                    $this->assertSame([0, 0, 7, 0], [$a, $b, $c, $d]);
-                    break;
-                case 1:
-                    $this->assertSame([0, 0, 7, 7], [$a, $b, $c, $d]);
-                    break;
-                case 2:
-                    $this->assertSame([1337, 0, 7, 7], [$a, $b, $c, $d]);
-                    break;
-                case 3:
-                    $this->assertSame([1337, 7, 7, 7], [$a, $b, $c, $d]);
-                    break;
-                case 4:
-                    $this->assertSame([1337, 37, 7, 7], [$a, $b, $c, $d]);
-                    break;
-                case 5:
-                    $this->assertSame([1337, 337, 7, 7], [$a, $b, $c, $d]);
-                    break;
-                case 6:
-                    $this->assertSame([1337, 1337, 7, 7], [$a, $b, $c, $d]);
-                    break;
-            }
-            $i++;
-            $callbackFired = true;
-        }))->onSending('foo:bar')->onSent()->onResponse(new Response(Phake::mock('React\Stream\Stream'), '', '', 200, '', [
-            'Content-Length' => 1337,
-        ]))->onData(str_pad('', 7, 'a'))->onData(str_pad('', 30, 'a'))->onData(str_pad('', 300, 'a'))->onData(str_pad('', 1000, 'a'));
+        (
+            new Progress(
+                function ($a, $b, $c, $d) use (&$callbackFired, &$i) {
+                    switch ($i) {
+                        case 0:
+                            $this->assertSame([0, 0, 7, 0], [$a, $b, $c, $d]);
+                            break;
+                        case 1:
+                            $this->assertSame([0, 0, 7, 7], [$a, $b, $c, $d]);
+                            break;
+                        case 2:
+                            $this->assertSame([1337, 0, 7, 7], [$a, $b, $c, $d]);
+                            break;
+                        case 3:
+                            $this->assertSame([1337, 7, 7, 7], [$a, $b, $c, $d]);
+                            break;
+                        case 4:
+                            $this->assertSame([1337, 37, 7, 7], [$a, $b, $c, $d]);
+                            break;
+                        case 5:
+                            $this->assertSame([1337, 337, 7, 7], [$a, $b, $c, $d]);
+                            break;
+                        case 6:
+                            $this->assertSame([1337, 1337, 7, 7], [$a, $b, $c, $d]);
+                            break;
+                    }
+                    $i++;
+                    $callbackFired = true;
+                }
+            )
+        )
+            ->onSending('foo:bar')
+            ->onSent()->onResponse(
+                new Response(
+                    Phake::mock('React\Stream\Stream'),
+                    '',
+                    '',
+                    200,
+                    '',
+                    [
+                        'Content-Length' => 1337,
+                    ]
+                )
+            )
+            ->onData(str_pad('', 7, 'a'))
+            ->onData(str_pad('', 30, 'a'))
+            ->onData(str_pad('', 300, 'a'))
+            ->onData(str_pad('', 1000, 'a'))
+        ;
 
         $this->assertTrue($callbackFired);
     }

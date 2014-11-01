@@ -16,94 +16,115 @@ use Phake;
  * Class RequestTest
  * @package WyriHaximus\React\Tests\Guzzle\HttpClient
  */
-class RequestTest extends \PHPUnit_Framework_TestCase {
+class RequestTest extends \PHPUnit_Framework_TestCase
+{
 
-	public function testSend() {
-		$requestArray = [
-            'http_method' => 'GET',
-            'url' => 'http://example.com/',
-            'headers' => [
-                'voer' => [
-                    'bar',
-                    'bor',
-                    'ber',
-                ],
-            ],
-            'body' => 'foo:bar',
+    public function testSend()
+    {
+        $requestArray = [
+        'http_method' => 'GET',
+        'url' => 'http://example.com/',
+        'headers' => [
+        'voer' => [
+        'bar',
+        'bor',
+        'ber',
+        ],
+        ],
+        'body' => 'foo:bar',
         ];
 
-		$loop = Phake::mock('React\EventLoop\LoopInterface');
+        $loop = Phake::mock('React\EventLoop\LoopInterface');
 
         $httpRequest = Phake::mock('React\HttpClient\Request');
         Phake::when($httpRequest)->end('foo:bar')->thenReturn(null);
 
-		$client = Phake::mock('React\HttpClient\Client');
-        Phake::when($client)->request($requestArray['http_method'], $requestArray['url'], [
-            'voer' => 'bar;bor;ber',
-        ])->thenReturn($httpRequest);
+        $client = Phake::mock('React\HttpClient\Client');
+        Phake::when($client)->request(
+            $requestArray['http_method'],
+            $requestArray['url'],
+            [
+                'voer' => 'bar;bor;ber',
+            ]
+        )->thenReturn($httpRequest);
 
-		$request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
+        $request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
         Phake::when($request)->setupRequest()->thenCallparent();
         Phake::when($request)->setupListeners($httpRequest)->thenCallParent();
         Phake::when($request)->setConnectionTimeout($httpRequest)->thenReturn(null);
 
-		$this->assertInstanceOf('React\Promise\PromiseInterface', $request->send());
+        $this->assertInstanceOf('React\Promise\PromiseInterface', $request->send());
 
         Phake::inOrder(
-            Phake::verify($loop)->addTimer(0, $this->callback(function($callback) {
-                $callback();
-                return true;
-            })),
+            Phake::verify($loop)->addTimer(
+                0,
+                $this->callback(
+                    function ($callback) {
+                        $callback();
+                        return true;
+                    }
+                )
+            ),
             Phake::verify($request)->tickRequest(),
-            Phake::verify($loop)->futureTick($this->callback(function($callback) {
-                $callback();
-                return true;
-            })),
+            Phake::verify($loop)->futureTick(
+                $this->callback(
+                    function ($callback) {
+                        $callback();
+                        return true;
+                    }
+                )
+            ),
             Phake::verify($request)->setupRequest(),
-            Phake::verify($client)->request($requestArray['http_method'], $requestArray['url'], [
-                'voer' => 'bar;bor;ber',
-            ]),
+            Phake::verify($client)->request(
+                $requestArray['http_method'],
+                $requestArray['url'],
+                [
+                    'voer' => 'bar;bor;ber',
+                ]
+            ),
             Phake::verify($request)->setupListeners($httpRequest),
             Phake::verify($httpRequest, Phake::times(5))->on($this->isType('string'), $this->isType('callable')),
             Phake::verify($request)->setConnectionTimeout($httpRequest)
         );
-	}
+    }
 
-	public function testSetConnectionTimeout() {
-		$requestArray = [
+    public function testSetConnectionTimeout()
+    {
+        $requestArray = [
             'client' => [
                 'connect_timeout' => 123,
             ],
         ];
 
-		$loop = Phake::mock('React\EventLoop\LoopInterface');
-		Phake::when($loop)->addTimer($this->isType('int'), $this->isType('callable'))->thenReturn(true);
+        $loop = Phake::mock('React\EventLoop\LoopInterface');
+        Phake::when($loop)->addTimer($this->isType('int'), $this->isType('callable'))->thenReturn(true);
 
-		$client = Phake::mock('React\HttpClient\Client');
-		$request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
+        $client = Phake::mock('React\HttpClient\Client');
+        $request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
 
-		$httpClientRequest = Phake::mock('React\HttpClient\Request');
-		$request->setConnectionTimeout($httpClientRequest);
+        $httpClientRequest = Phake::mock('React\HttpClient\Request');
+        $request->setConnectionTimeout($httpClientRequest);
 
-		Phake::verify($loop)->addTimer(123, $this->isType('callable'));
-	}
+        Phake::verify($loop)->addTimer(123, $this->isType('callable'));
+    }
 
-	public function testSetRequestTimeout() {
+    public function testSetRequestTimeout()
+    {
         $requestArray = [
             'client' => [
                 'timeout' => 321,
             ],
         ];
 
-		$loop = Phake::mock('React\EventLoop\LoopInterface');
-		Phake::when($loop)->addTimer($this->isType('int'), $this->isType('callable'))->thenReturn(true);
+        $loop = Phake::mock('React\EventLoop\LoopInterface');
+        Phake::when($loop)->addTimer($this->isType('int'), $this->isType('callable'))->thenReturn(true);
 
-		$client = Phake::mock('React\HttpClient\Client');
-		$request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
+        $client = Phake::mock('React\HttpClient\Client');
+        $request = Phake::partialMock('WyriHaximus\React\RingPHP\HttpClient\Request', $requestArray, $client, $loop);
 
-		$httpClientRequest = Phake::mock('React\HttpClient\Request');
-		$request->setRequestTimeout($httpClientRequest);
+        $httpClientRequest = Phake::mock('React\HttpClient\Request');
+        $request->setRequestTimeout($httpClientRequest);
 
-		Phake::verify($loop)->addTimer(321, $this->isType('callable'));
-	}
+        Phake::verify($loop)->addTimer(321, $this->isType('callable'));
+    }
 }

@@ -18,31 +18,38 @@ use WyriHaximus\React\RingPHP\HttpClient\RequestFactory;
  *
  * @package WyriHaximus\React\Tests\Guzzle
  */
-class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
+class RequestFactoryTest extends \PHPUnit_Framework_TestCase
+{
 
     protected $requestFactory;
 
-	public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
         $this->requestFactory = new RequestFactory();
     }
-    
-    public function tearDown() {
+
+    public function tearDown()
+    {
         parent::tearDown();
-        
+
         unset($this->requestFactory);
     }
 
-    public function testCreate() {
-        $this->assertInstanceOf('WyriHaximus\React\RingPHP\HttpClient\Request', $this->requestFactory->create(
-			[],
-			Phake::partialMock('React\HttpClient\Client',
-				Phake::mock('React\SocketClient\ConnectorInterface'),
-				Phake::mock('React\SocketClient\ConnectorInterface')
-			),
-			Phake::mock('\React\EventLoop\StreamSelectLoop')
-		));
+    public function testCreate()
+    {
+        $this->assertInstanceOf(
+            'WyriHaximus\React\RingPHP\HttpClient\Request',
+            $this->requestFactory->create(
+                [],
+                Phake::partialMock(
+                    'React\HttpClient\Client',
+                    Phake::mock('React\SocketClient\ConnectorInterface'),
+                    Phake::mock('React\SocketClient\ConnectorInterface')
+                ),
+                Phake::mock('\React\EventLoop\StreamSelectLoop')
+            )
+        );
     }
-    
 }
