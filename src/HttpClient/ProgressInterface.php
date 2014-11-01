@@ -21,7 +21,7 @@ interface ProgressInterface
     /**
      * @param callable $callback
      */
-    public function setCallback(callable $callback);
+    public function __construct(callable $callback);
 
     /**
      * @param HttpResponse $response
