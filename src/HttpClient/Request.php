@@ -366,6 +366,9 @@ class Request
                 $request['url'],
             ];
         }
+        if (!$request['client']['redirect']['strict']) {
+            $request['http_method'] = 'GET';
+        }
         $request['url'] = $location;
         (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
