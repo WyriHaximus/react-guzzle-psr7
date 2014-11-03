@@ -22,16 +22,16 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testSend()
     {
         $requestArray = [
-        'http_method' => 'GET',
-        'url' => 'http://example.com/',
-        'headers' => [
-        'voer' => [
-        'bar',
-        'bor',
-        'ber',
-        ],
-        ],
-        'body' => 'foo:bar',
+            'http_method' => 'GET',
+            'url' => 'http://example.com/',
+            'headers' => [
+                'voer' => [
+                    'bar',
+                    'bor',
+                    'ber',
+                ],
+            ],
+            'body' => 'foo:bar',
         ];
 
         $loop = Phake::mock('React\EventLoop\LoopInterface');
