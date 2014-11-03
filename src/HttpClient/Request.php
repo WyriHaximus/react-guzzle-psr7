@@ -370,6 +370,7 @@ class Request
             $request['http_method'] = 'GET';
         }
         $request['url'] = $location;
+
         (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
         }, function ($error) {
