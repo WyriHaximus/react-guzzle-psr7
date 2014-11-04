@@ -1,6 +1,14 @@
 ReactGuzzleRing
 ===============
 
+[![Build Status](https://travis-ci.org/WyriHaximus/ReactGuzzleRing.png)](https://travis-ci.org/WyriHaximus/ReactGuzzleRing)
+[![Latest Stable Version](https://poser.pugx.org/WyriHaximus/react-guzzle-ring/v/stable.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-ring)
+[![Total Downloads](https://poser.pugx.org/WyriHaximus/react-guzzle-ring/downloads.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-ring)
+[![Coverage Status](https://coveralls.io/repos/WyriHaximus/ReactGuzzleRing/badge.png)](https://coveralls.io/r/WyriHaximus/ReactGuzzleRing)
+[![License](https://poser.pugx.org/wyrihaximus/react-guzzle-ring/license.png)](https://packagist.org/packages/wyrihaximus/react-guzzle-ring)
+
+ReactPHP HttpClient Adapter for Guzzle5, for Guzzle4 check [ReactGuzzle](https://github.com/WyriHaximus/ReactGuzzle)
+
 ### Installation ###
 
 To install via [Composer](http://getcomposer.org/), use the command below, it will automatically detect the latest version and bind it with `~`.
