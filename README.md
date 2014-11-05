@@ -31,7 +31,7 @@ $client = new \GuzzleHttp\Client([
     'handler' => $handler,
 ]);
 
-$client->get('https://github.com/', [
+$client->get('http://github.com/', [ // This will redirect to https://github.com/
     'future' => true,
 ])->then(function ($response) {
     var_export($response);
