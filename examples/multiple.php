@@ -5,7 +5,6 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 use GuzzleHttp\Client;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
-use WyriHaximus\React\RingPHP\HttpClient\ProgressInterface;
 
 // Create eventloop
 $loop = Factory::create();
@@ -36,8 +35,6 @@ foreach ([
         echo $name . ' completed' . PHP_EOL;
     }, function($event) use ($name) {
         echo $name . ' error' . PHP_EOL;
-    }, function(ProgressInterface $event) use ($name) {
-        echo $name . ' progress: ' . number_format($event->getCompletePercentage(), 2) . '%' . PHP_EOL;
     });
 }
 

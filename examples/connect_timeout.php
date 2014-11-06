@@ -6,7 +6,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
-use WyriHaximus\React\RingPHP\HttpClient\ProgressInterface;
 
 // Create eventloop
 $loop = Factory::create();
@@ -23,8 +22,6 @@ $guzzle->get('http://www.amazon.com/', [
     echo 'Amazon completed, we really shouldn\'t get getting here...' . PHP_EOL;
 }, function($event) {
     echo 'Amazon error' . PHP_EOL;
-}, function(ProgressInterface $event) {
-    echo 'Amazon progress: ' . $event['event'] . PHP_EOL;
 });
 
 

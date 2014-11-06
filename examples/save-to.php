@@ -6,8 +6,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
-use WyriHaximus\React\RingPHP\HttpClient\ProgressInterface;
-
 // Create eventloop
 $loop = Factory::create();
 
@@ -20,8 +18,6 @@ $loop = Factory::create();
     echo 'Done!' . PHP_EOL;
 }, function($event) {
     echo 'Error: ' . var_export($event, true) . PHP_EOL;
-}, function(ProgressInterface $event) {
-    echo 'Progress: '. $event['event'] . PHP_EOL;
 });
 
 $loop->run();
