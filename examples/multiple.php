@@ -33,7 +33,7 @@ foreach ([
         'future' => true,
     ])->then(function($response) use ($name) {
         echo $name . ' completed' . PHP_EOL;
-    }, function($event) use ($name) {
+    }, function($error) use ($name) {
         echo $name . ' error' . PHP_EOL;
     });
 }

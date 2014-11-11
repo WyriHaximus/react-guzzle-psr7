@@ -16,8 +16,8 @@ $loop = Factory::create();
     'future' => true,
 ])->then(function(Response $response) {
     echo 'Done!' . PHP_EOL;
-}, function($event) {
-    echo 'Error: ' . var_export($event, true) . PHP_EOL;
+}, function($error) {
+    echo 'Error: ' . var_export($error, true) . PHP_EOL;
 });
 
 $loop->run();

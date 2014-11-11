@@ -16,8 +16,8 @@ $loop = Factory::create();
     'future' => true,
 ])->then(function(Response $response) { // Success callback
     var_export($response);
-}, function($event) { // Error callback
-    var_export($event);
+}, function($error) { // Error callback
+    var_export($error);
 });
 
 $loop->run();

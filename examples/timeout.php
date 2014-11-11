@@ -19,7 +19,7 @@ $guzzle->get('http://www.amazon.com/', [
     'future' => true,
 ])->then(function(Response $response) {
     echo 'Amazon completed' . PHP_EOL;
-}, function($event) {
+}, function($error) {
     echo 'Amazon error' . PHP_EOL;
 });
 
