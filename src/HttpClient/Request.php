@@ -333,8 +333,8 @@ class Request
     protected function handleResponse()
     {
         $headers = $this->httpResponse->getHeaders();
-        if (isset($headers['location'])) {
-            $this->followRedirect($headers['location']);
+        if (Utils::hasHeader($headers, 'location')) {
+            $this->followRedirect(Utils::header($headers, 'location'));
             return;
         }
 
