@@ -37,6 +37,7 @@ class HttpClientAdapter
      * @param LoopInterface $loop
      * @param HttpClient $httpClient
      * @param DnsResolver $dnsResolver
+     * @param RequestFactory $requestFactory
      */
     public function __construct(
         LoopInterface $loop,
@@ -115,9 +116,22 @@ class HttpClientAdapter
         return $this->requestFactory;
     }
 
+    /**
+     * @param array $request
+     * @return FutureArray
+     */
     public function __invoke(array $request)
     {
+        $done = false;
+        $markDone = function ($arg) use (&$done) {
+            $done = true;
+            return $arg;
+        };
         $httpRequest = $this->requestFactory->create($request, $this->httpClient, $this->loop);
-        return new FutureArray($httpRequest->send());
+        return new FutureArray($httpRequest->send($this)->then($markDone, $markDone), function () use (&$done) {
+            do {
+                $this->loop->tick();
+            } while (!$done);
+        });
     }
 }
