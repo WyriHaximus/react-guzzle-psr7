@@ -152,7 +152,7 @@ class Stream implements StreamInterface
 
     protected function toTickOrNotToTick()
     {
-        if ($this->size == 0) {
+        if ($this->size === 0) {
             $this->loop->tick();
         }
     }
