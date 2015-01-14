@@ -12,10 +12,10 @@ $loop = Factory::create();
 
 (new Client([
     'handler' => new HttpClientAdapter($loop),
-]))->get('http://docs.guzzlephp.org/en/latest/', [
+]))->get('http://blog.wyrihaximus.net/atom.xml', [
     'future' => true,
 ])->then(function(Response $response) { // Success callback
-    var_export($response);
+    var_export($response->getBody()->getContents());
 }, function($error) { // Error callback
     var_export($error);
 });
