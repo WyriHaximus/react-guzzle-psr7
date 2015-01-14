@@ -123,7 +123,7 @@ class HttpClientAdapter
      */
     public function __invoke(array $request)
     {
-        $done = false;;
+        $done = false;
         $httpRequest = $this->requestFactory->create($request, $this->httpClient, $this->loop);
         return new FutureArray($httpRequest->send($this)->then(function ($arg) use (&$done) {
             $done = true;
