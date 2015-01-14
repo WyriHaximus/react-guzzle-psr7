@@ -9,6 +9,7 @@ use React\Dns\Resolver\Resolver as DnsResolver;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as HttpClient;
 use React\HttpClient\Factory as HttpClientFactory;
+use React\Promise\FulfilledPromise;
 use WyriHaximus\React\RingPHP\HttpClient\RequestFactory;
 
 class HttpClientAdapter
@@ -122,13 +123,17 @@ class HttpClientAdapter
      */
     public function __invoke(array $request)
     {
-        $done = false;
-        $markDone = function ($arg) use (&$done) {
+        $done = false;;
+        $httpRequest = $this->requestFactory->create($request, $this->httpClient, $this->loop);
+        return new FutureArray($httpRequest->send($this)->then(function ($arg) use (&$done) {
             $done = true;
             return $arg;
-        };
-        $httpRequest = $this->requestFactory->create($request, $this->httpClient, $this->loop);
-        return new FutureArray($httpRequest->send($this)->then($markDone, $markDone), function () use (&$done) {
+        }, function ($error) use (&$done) {
+            $done = true;
+            return [
+                'error' => $error,
+            ];
+        }), function () use (&$done) {
             do {
                 $this->loop->tick();
             } while (!$done);

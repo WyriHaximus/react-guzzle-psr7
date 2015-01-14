@@ -237,7 +237,7 @@ class Request
             $this->requestTimer = $this->loop->addTimer(
                 $this->request['client']['timeout'],
                 function () use ($request) {
-                    $request->close(new \Exception('Transaction time out'));
+                    $request->closeError(new \Exception('Transaction time out'));
                 }
             );
         }
@@ -310,9 +310,7 @@ class Request
 
         $this->loop->futureTick(function () {
             if ($this->httpResponse === null) {
-                $this->deferred->reject([
-                    'error' => $this->error,
-                ]);
+                $this->deferred->reject($this->error);
             }
         });
     }
@@ -361,9 +359,7 @@ class Request
         $request = $this->request;
         $request['client']['redirect']['max']--;
         if ($request['client']['redirect']['max'] <= 0) {
-            $this->deferred->reject([
-                'error' => new Exception('Exceeded maximum redirects'),
-            ]);
+            $this->deferred->reject(new Exception('Exceeded maximum redirects'));
             return;
         }
         if ($request['client']['redirect']['referer']) {
@@ -382,9 +378,7 @@ class Request
         (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
         }, function ($error) {
-            $this->deferred->reject([
-                'error' => $error,
-            ]);
+            $this->deferred->reject($error);
         });
     }
 }
