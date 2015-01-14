@@ -338,7 +338,9 @@ class Request
             'reason' => $this->httpResponse->getReasonPhrase(),
         ];
 
-        $this->deferred->resolve($response);
+        $this->loop->futureTick(function () use ($response) {
+            $this->deferred->resolve($response);
+        });
     }
 
     protected function createStream($request)
