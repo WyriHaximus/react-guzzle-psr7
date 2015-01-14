@@ -15,7 +15,7 @@ $loop = Factory::create();
 ]))->get('http://www.wyrihaximus.net/', [ // This will redirect to http://wyrihaximus.net/
     'future' => true,
 ])->then(function(Response $response) { // Success callback
-    var_export($response->getEffectiveUrl());
+    echo $response->getEffectiveUrl(), PHP_EOL;
 });
 
 $loop->run();
