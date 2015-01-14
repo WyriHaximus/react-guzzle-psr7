@@ -12,10 +12,10 @@ $loop = Factory::create();
 
 (new Client([
     'handler' => new HttpClientAdapter($loop),
-]))->get('http://github.com/', [ // This will redirect to https://github.com/
+]))->get('http://www.wyrihaximus.net/', [ // This will redirect to https://github.com/
     'future' => true,
 ])->then(function(Response $response) { // Success callback
-    var_export($response);
+    var_export($response->getEffectiveUrl());
 });
 
 $loop->run();
