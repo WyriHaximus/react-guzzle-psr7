@@ -32,7 +32,7 @@ class Stream implements StreamInterface
             'data',
             function ($data) {
                 $this->buffer .= $data;
-                $this->size = $this->buffer;
+                $this->size = strlen($this->buffer);
             }
         );
         $options['request']->on(
@@ -47,7 +47,7 @@ class Stream implements StreamInterface
 
     public function eof()
     {
-        return $this->eof;
+        return $this->eof && $this->size === 0;
     }
 
     public function getSize()
@@ -92,11 +92,13 @@ class Stream implements StreamInterface
         if (strlen($this->buffer) <= $length) {
             $buffer = $this->buffer;
             $this->buffer = '';
+            $this->size = 0;
             return $buffer;
         }
 
         $buffer = substr($this->buffer, 0, $length);
         $this->buffer = substr($this->buffer, $length);
+        $this->size = strlen($this->buffer);
         return $buffer;
     }
 
