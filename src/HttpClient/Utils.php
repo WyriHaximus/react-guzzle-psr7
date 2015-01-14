@@ -50,4 +50,41 @@ class Utils
         }
         return $return;
     }
+
+    /**
+     * Get the correct, case sensitive, header name index
+     *
+     * @param array  $headers The header collection to search through.
+     * @param string $header  The header name to find.
+     *
+     * @return null|string
+     */
+    public static function getHeaderIndex(array $headers, $header)
+    {
+        $return = null;
+        foreach ($headers as $name => $value) {
+            $return = !strcasecmp($name, $header) ? $name : $return;
+        }
+        return $return;
+    }
+
+    /**
+     * (Re)place $header in the $headers collection.
+     *
+     * @param array  $headers Header collection.
+     * @param string $header  Header name to (re)place
+     * @param array  $value   Value to put into the header/
+     *
+     * @return array
+     */
+    public static function placeHeader(array $headers, $header, array $value)
+    {
+        if (!static::hasHeader($headers, $header)) {
+            $headers[$header] = $value;
+            return $headers;
+        }
+
+        $headers[static::getHeaderIndex($headers, $header)] = $value;
+        return $headers;
+    }
 }

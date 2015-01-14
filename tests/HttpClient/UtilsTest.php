@@ -64,4 +64,64 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
             'bAr' => '',
         ], 'Fo'));
     }
+
+    public function testGetHeaderIndex()
+    {
+        $this->assertSame('foo', Utils::getHeaderIndex([
+            'foo' => '123',
+            'bar' => '456',
+        ], 'foo'));
+
+        $this->assertSame('bAr', Utils::getHeaderIndex([
+            'foo' => '123',
+            'bAr' => '456',
+        ], 'baR'));
+
+        $this->assertSame(null, Utils::getHeaderIndex([
+            'foo' => '',
+            'bar' => '',
+        ], 'fo'));
+
+        $this->assertSame(null, Utils::getHeaderIndex([
+            'foo' => '',
+            'bAr' => '',
+        ], 'Fo'));
+    }
+
+    public function testPlaceHeader()
+    {
+        $this->assertSame([
+            'foo' => ['789'],
+            'bar' => '456',
+        ], Utils::placeHeader([
+            'foo' => '123',
+            'bar' => '456',
+        ], 'foo', ['789']));
+
+        $this->assertSame([
+            'foo' => '123',
+            'bAr' => ['789'],
+        ], Utils::placeHeader([
+            'foo' => '123',
+            'bAr' => '456',
+        ], 'baR', ['789']));
+
+        $this->assertSame([
+            'foo' => '',
+            'bar' => '',
+            'fo' => ['789'],
+        ], Utils::placeHeader([
+            'foo' => '',
+            'bar' => '',
+        ], 'fo', ['789']));
+
+        $this->assertSame([
+            'foo' => '',
+            'bAr' => '',
+            'Fo' => ['789'],
+        ], Utils::placeHeader([
+            'foo' => '',
+            'bAr' => '',
+        ], 'Fo', ['789']));
+    }
 }
