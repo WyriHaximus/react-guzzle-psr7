@@ -338,6 +338,12 @@ class Request
             'reason' => $this->httpResponse->getReasonPhrase(),
         ];
 
+        if (!$this->request['client']['stream']) {
+            return $request->on('end', function () use ($response) {
+                $this->deferred->resolve($response);
+            });
+        }
+
         $this->loop->futureTick(function () use ($response) {
             $this->deferred->resolve($response);
         });
