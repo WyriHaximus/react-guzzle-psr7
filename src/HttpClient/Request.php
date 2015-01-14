@@ -10,14 +10,13 @@
  */
 namespace WyriHaximus\React\RingPHP\HttpClient;
 
-use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Message\MessageFactory;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as ReactHttpClient;
 use React\HttpClient\Request as HttpRequest;
 use React\HttpClient\Response as HttpResponse;
 use React\Promise\Deferred;
-use React\Stream\Stream;
+use React\Stream\Stream as ReactStream;
 use Exception;
 
 /**
@@ -51,6 +50,11 @@ class Request
      * @var string
      */
     protected $buffer = '';
+
+    /**
+     * @var Stream
+     */
+    protected $stream;
 
     /**
      * @var \Exception
@@ -191,8 +195,8 @@ class Request
         );
         $request->on(
             'response',
-            function (HttpResponse $response) {
-                $this->onResponse($response);
+            function (HttpResponse $response) use ($request) {
+                $this->onResponse($response, $request);
             }
         );
         $request->on(
@@ -248,35 +252,26 @@ class Request
 
     /**
      * @param HttpResponse $response
+     * @param HttpRequest  $request
      */
-    protected function onResponse(HttpResponse $response)
+    protected function onResponse(HttpResponse $response, HttpRequest $request)
     {
+        $this->httpResponse = $response;
         if (!empty($this->request['client']['save_to'])) {
-            $this->saveTo($response);
-        } else {
-            $response->on(
-                'data',
-                function ($data) use ($response) {
-                    $this->onData($data);
-                }
-            );
+            $this->saveTo();
+            return;
         }
 
-        $this->progress->onResponse($response);
-
-        $this->httpResponse = $response;
+        $this->handleResponse($request);
     }
 
-    /**
-     * @param HttpResponse $response
-     */
-    protected function saveTo(HttpResponse $response)
+    protected function saveTo()
     {
         $saveTo = $this->request['client']['save_to'];
 
         $writeStream = fopen($saveTo, 'w');
         stream_set_blocking($writeStream, 0);
-        $saveToStream = new Stream($writeStream, $this->loop);
+        $saveToStream = new ReactStream($writeStream, $this->loop);
 
         $saveToStream->on(
             'end',
@@ -285,19 +280,14 @@ class Request
             }
         );
 
-        $response->pipe($saveToStream);
+        $this->httpResponse->pipe($saveToStream);
     }
 
     /**
      * @param string $data
-     * @todo implement proper streaming
      */
     protected function onData($data)
     {
-        if (!$this->request['client']['stream']) {
-            $this->buffer .= $data;
-        }
-
         $this->progress->onData($data);
     }
 
@@ -321,8 +311,6 @@ class Request
         $this->loop->futureTick(function () {
             if ($this->httpResponse === null) {
                 $this->deferred->reject($this->error);
-            } else {
-                $this->handleResponse();
             }
         });
     }
@@ -330,26 +318,37 @@ class Request
     /**
      *
      */
-    protected function handleResponse()
+    protected function handleResponse($request)
     {
+        $this->progress->onResponse($this->httpResponse);
+
         $headers = $this->httpResponse->getHeaders();
         if (Utils::hasHeader($headers, 'location')) {
             $this->followRedirect(Utils::header($headers, 'location'));
             return;
         }
 
+        $this->createStream($request);
+
         $response = [
             'effective_url' => $this->request['url'],
-            'body' => $this->buffer,
+            'body' => $this->stream,
             'headers' => $this->httpResponse->getHeaders(),
             'status' => $this->httpResponse->getCode(),
             'reason' => $this->httpResponse->getReasonPhrase(),
         ];
 
-        Core::rewindBody($response);
         $this->deferred->resolve($response);
     }
 
+    protected function createStream($request)
+    {
+        $this->stream = new Stream([
+            'response' => $this->httpResponse,
+            'request' => $request,
+            'loop' => $this->loop,
+        ]);
+    }
     /**
      * @param string $location
      */
@@ -370,6 +369,9 @@ class Request
             $request['http_method'] = 'GET';
         }
         $request['url'] = $location;
+        $request['headers'] = Utils::placeHeader($request['headers'], 'Host', [
+            parse_url($request['url'], PHP_URL_HOST),
+        ]);
 
         (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
