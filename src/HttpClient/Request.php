@@ -310,7 +310,9 @@ class Request
 
         $this->loop->futureTick(function () {
             if ($this->httpResponse === null) {
-                $this->deferred->reject($this->error);
+                $this->deferred->reject([
+                    'error' => $this->error,
+                ]);
             }
         });
     }
@@ -359,7 +361,9 @@ class Request
         $request = $this->request;
         $request['client']['redirect']['max']--;
         if ($request['client']['redirect']['max'] <= 0) {
-            $this->deferred->reject(new Exception('Exceeded maximum redirects'));
+            $this->deferred->reject([
+                'error' => new Exception('Exceeded maximum redirects'),
+            ]);
             return;
         }
         if ($request['client']['redirect']['referer']) {
@@ -378,7 +382,9 @@ class Request
         (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
         }, function ($error) {
-            $this->deferred->reject($error);
+            $this->deferred->reject([
+                'error' => $error,
+            ]);
         });
     }
 }
