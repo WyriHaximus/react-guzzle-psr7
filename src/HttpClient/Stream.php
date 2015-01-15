@@ -113,7 +113,7 @@ class Stream implements StreamInterface
 
     public function __toString()
     {
-        return GuzzleUtils::copyToString($this->stream);
+        return $this->getContents();
     }
 
     public function getMetadata($key = null)
