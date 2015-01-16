@@ -7,21 +7,18 @@ use GuzzleHttp\Message\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
-// Create eventloop
-$loop = Factory::create();
-
 $guzzle = new Client([
-'connect_timeout' => 0.001,
-    'handler' => new HttpClientAdapter($loop),
+    'connect_timeout' => 0.001,
+    'handler' => new HttpClientAdapter(Factory::create()),
 ]);
 
 $guzzle->get('http://www.amazon.com/', [
-'connect_timeout' => 0.001,
+    'connect_timeout' => 0.001,
     'future' => true,
-])->then(function(Response $response) {
+])->then(function() {
     echo 'Amazon completed, we really shouldn\'t get getting here...' . PHP_EOL;
-}, function($error) {
-    echo 'Amazon error' . PHP_EOL;
+}, function(Exception $error) {
+    echo 'Amazon error' . $error->getMessage() . PHP_EOL;
 });
 
 

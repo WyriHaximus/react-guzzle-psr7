@@ -6,11 +6,8 @@ use GuzzleHttp\Client;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
-// Create eventloop
-$loop = Factory::create();
-
 $guzzle = new Client([
-    'handler' => new HttpClientAdapter($loop),
+    'handler' => new HttpClientAdapter(Factory::create()),
 ]);
 
 foreach ([
@@ -26,15 +23,19 @@ foreach ([
         'name' => 'Duck Duck Go',
         'url' => 'http://www.duckduckgo.com/',
     ],
+    [
+        'name' => 'Blog',
+        'url' => 'http://blog.wyrihaximus.net/',
+    ],
 ] as $site) {
     $name = $site['name'];
 
     $guzzle->get($site['url'], [
         'future' => true,
-    ])->then(function($response) use ($name) {
+    ])->then(function() use ($name) {
         echo $name . ' completed' . PHP_EOL;
-    }, function($error) use ($name) {
-        echo $name . ' error' . PHP_EOL;
+    }, function(Exception $error) use ($name) {
+        echo $name . ' error: ' . $error->getMessage() . PHP_EOL;
     });
 }
 

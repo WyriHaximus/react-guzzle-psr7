@@ -7,11 +7,8 @@ use GuzzleHttp\Message\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
-// Create eventloop
-$loop = Factory::create();
-
 (new Client([
-    'handler' => new HttpClientAdapter($loop),
+    'handler' => new HttpClientAdapter(Factory::create()),
 ]))->get('http://blog.wyrihaximus.net/', [
     'future' => true,
     'stream' => true,
@@ -20,7 +17,8 @@ $loop = Factory::create();
     while (!$body->eof()) { // Reading from the body untill there is nothing more to read
         echo $body->read(1024);
     }
-}, function($error) { // Error callback
+    echo PHP_EOL;
+}, function(Exception $error) { // Error callback
     echo $error->getMessage(), PHP_EOL;
 });
 

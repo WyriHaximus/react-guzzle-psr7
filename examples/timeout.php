@@ -7,11 +7,8 @@ use GuzzleHttp\Message\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
-// Create eventloop
-$loop = Factory::create();
-
 $guzzle = new Client([
-    'handler' => new HttpClientAdapter($loop),
+    'handler' => new HttpClientAdapter(Factory::create()),
 ]);
 
 $guzzle->get('http://www.amazon.com/', [
@@ -19,7 +16,7 @@ $guzzle->get('http://www.amazon.com/', [
     'future' => true,
 ])->then(function(Response $response) {
     echo 'Amazon completed' . PHP_EOL;
-}, function($error) {
+}, function(exception $error) {
     echo 'Amazon error' . PHP_EOL;
     echo $error->getMessage() . PHP_EOL;
 });

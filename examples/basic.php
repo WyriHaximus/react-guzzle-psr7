@@ -7,17 +7,14 @@ use GuzzleHttp\Message\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
-// Create eventloop
-$loop = Factory::create();
-
 (new Client([
-    'handler' => new HttpClientAdapter($loop),
+    'handler' => new HttpClientAdapter(Factory::create()),
 ]))->get('http://blog.wyrihaximus.net/atom.xml', [
     'future' => true,
 ])->then(function(Response $response) { // Success callback
-    var_export($response->getBody()->getContents());
-}, function($error) { // Error callback
-    var_export($error);
+    echo $response->getBody()->getContents(), PHP_EOL;
+}, function(Exception $error) { // Error callback
+    echo $error->getMessage(), PHP_EOL;
 });
 
 $loop->run();
