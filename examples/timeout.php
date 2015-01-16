@@ -3,7 +3,6 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Message\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
