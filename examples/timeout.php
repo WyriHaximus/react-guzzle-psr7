@@ -6,8 +6,10 @@ use GuzzleHttp\Client;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
+$loop = Factory::create();
+
 $guzzle = new Client([
-    'handler' => new HttpClientAdapter(Factory::create()),
+    'handler' => new HttpClientAdapter($loop),
 ]);
 
 $guzzle->get('http://www.amazon.com/', [

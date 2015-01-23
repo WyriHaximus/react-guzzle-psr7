@@ -7,8 +7,10 @@ use GuzzleHttp\Message\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
+$loop = Factory::create();
+
 (new Client([
-    'handler' => new HttpClientAdapter(Factory::create()),
+    'handler' => new HttpClientAdapter($loop),
 ]))->get('http://blog.wyrihaximus.net/robots.txt', [
     'future' => true,
 ])->then(function(Response $response) { // Success callback

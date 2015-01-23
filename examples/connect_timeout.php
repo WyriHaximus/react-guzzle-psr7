@@ -7,9 +7,11 @@ use GuzzleHttp\Message\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
+$loop = Factory::create();
+
 $guzzle = new Client([
     'connect_timeout' => 0.001,
-    'handler' => new HttpClientAdapter(Factory::create()),
+    'handler' => new HttpClientAdapter($loop),
 ]);
 
 $guzzle->get('http://www.amazon.com/', [
