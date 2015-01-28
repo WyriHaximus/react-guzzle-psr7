@@ -324,7 +324,7 @@ class Request
 
         $headers = $this->httpResponse->getHeaders();
         if (Utils::hasHeader($headers, 'location')) {
-            $this->followRedirect(Utils::header($headers, 'location'));
+            $this->followRedirect(Utils::redirectUrl($this->request, $headers));
             return;
         }
 

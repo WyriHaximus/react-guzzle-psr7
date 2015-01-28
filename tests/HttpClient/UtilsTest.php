@@ -124,4 +124,82 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
             'bAr' => '',
         ], 'Fo', ['789']));
     }
+
+    public function providerRedirectUrl()
+    {
+        return [
+            /**
+             * Simple HTTP to HTTPS redirect nothing fancy.
+             */
+            [
+                'https://example.com/',
+                [
+                    'url' => 'http://example.com/',
+                    'headers' => [
+                        'Host' => ['example.com'],
+                    ],
+                ],
+                [
+                    'Location' => 'https://example.com/',
+                ],
+            ],
+
+            /**
+             * Absolute URL redirect
+             */
+            [
+                'https://example.com/foo.bar',
+                [
+                    'url' => 'https://example.com/',
+                    'headers' => [
+                        'Host' => ['example.com'],
+                    ],
+                ],
+                [
+                    'Location' => '/foo.bar',
+                ],
+            ],
+
+            /**
+             * Relative URL redirect
+             */
+            [
+                'https://example.com/foo.bar',
+                [
+                    'url' => 'https://example.com/pizza/foo.bar',
+                    'headers' => [
+                        'Host' => ['example.com'],
+                    ],
+                ],
+                [
+                    'Location' => '../foo.bar',
+                ],
+            ],
+
+            /**
+             * Different hostname redirect
+             */
+            [
+                'https://www.example.com/',
+                [
+                    'url' => 'https://example.com/',
+                    'headers' => [
+                        'Host' => ['example.com'],
+                    ],
+                ],
+                [
+                    'Location' => 'https://www.example.com/',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerRedirectUrl
+     */
+    public function testRedirectUrl($expected, $request, $headers)
+    {
+
+        $this->assertSame($expected, Utils::redirectUrl($request, $headers));
+    }
 }

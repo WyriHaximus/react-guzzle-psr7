@@ -10,6 +10,8 @@
  */
 namespace WyriHaximus\React\RingPHP\HttpClient;
 
+use GuzzleHttp\Url;
+
 /**
  * Class Utils
  *
@@ -86,5 +88,10 @@ class Utils
 
         $headers[static::getHeaderIndex($headers, $header)] = $value;
         return $headers;
+    }
+
+    public static function redirectUrl(array $request, array $headers)
+    {
+        return (string) Url::fromString($request['url'])->combine(static::header($headers, 'location'));
     }
 }
