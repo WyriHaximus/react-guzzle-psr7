@@ -19,183 +19,40 @@ use WyriHaximus\React\RingPHP\HttpClient\Utils;
  */
 class UtilsTest extends \PHPUnit_Framework_TestCase
 {
-    public function testHasHeader()
+    /**
+     * @dataProvider \WyriHaximus\React\Tests\RingPHP\HttpClient\UtilsProvider::providerHasHeader
+     */
+    public function testHasHeader($boolean, $headers, $header)
     {
-        $this->assertTrue(Utils::hasHeader([
-            'foo' => '',
-            'bar' => '',
-        ], 'foo'));
-
-        $this->assertTrue(Utils::hasHeader([
-            'foo' => '',
-            'bAr' => '',
-        ], 'baR'));
-
-        $this->assertTrue(!Utils::hasHeader([
-            'foo' => '',
-            'bar' => '',
-        ], 'fo'));
-
-        $this->assertTrue(!Utils::hasHeader([
-            'foo' => '',
-            'bAr' => '',
-        ], 'Fo'));
-    }
-
-    public function testHeader()
-    {
-        $this->assertSame('123', Utils::header([
-            'foo' => '123',
-            'bar' => '456',
-        ], 'foo'));
-
-        $this->assertSame('456', Utils::header([
-            'foo' => '123',
-            'bAr' => '456',
-        ], 'baR'));
-
-        $this->assertSame(null, Utils::header([
-            'foo' => '',
-            'bar' => '',
-        ], 'fo'));
-
-        $this->assertSame(null, Utils::header([
-            'foo' => '',
-            'bAr' => '',
-        ], 'Fo'));
-    }
-
-    public function testGetHeaderIndex()
-    {
-        $this->assertSame('foo', Utils::getHeaderIndex([
-            'foo' => '123',
-            'bar' => '456',
-        ], 'foo'));
-
-        $this->assertSame('bAr', Utils::getHeaderIndex([
-            'foo' => '123',
-            'bAr' => '456',
-        ], 'baR'));
-
-        $this->assertSame(null, Utils::getHeaderIndex([
-            'foo' => '',
-            'bar' => '',
-        ], 'fo'));
-
-        $this->assertSame(null, Utils::getHeaderIndex([
-            'foo' => '',
-            'bAr' => '',
-        ], 'Fo'));
-    }
-
-    public function testPlaceHeader()
-    {
-        $this->assertSame([
-            'foo' => ['789'],
-            'bar' => '456',
-        ], Utils::placeHeader([
-            'foo' => '123',
-            'bar' => '456',
-        ], 'foo', ['789']));
-
-        $this->assertSame([
-            'foo' => '123',
-            'bAr' => ['789'],
-        ], Utils::placeHeader([
-            'foo' => '123',
-            'bAr' => '456',
-        ], 'baR', ['789']));
-
-        $this->assertSame([
-            'foo' => '',
-            'bar' => '',
-            'fo' => ['789'],
-        ], Utils::placeHeader([
-            'foo' => '',
-            'bar' => '',
-        ], 'fo', ['789']));
-
-        $this->assertSame([
-            'foo' => '',
-            'bAr' => '',
-            'Fo' => ['789'],
-        ], Utils::placeHeader([
-            'foo' => '',
-            'bAr' => '',
-        ], 'Fo', ['789']));
-    }
-
-    public function providerRedirectUrl()
-    {
-        return [
-            /**
-             * Simple HTTP to HTTPS redirect nothing fancy.
-             */
-            [
-                'https://example.com/',
-                [
-                    'url' => 'http://example.com/',
-                    'headers' => [
-                        'Host' => ['example.com'],
-                    ],
-                ],
-                [
-                    'Location' => 'https://example.com/',
-                ],
-            ],
-
-            /**
-             * Absolute URL redirect
-             */
-            [
-                'https://example.com/foo.bar',
-                [
-                    'url' => 'https://example.com/',
-                    'headers' => [
-                        'Host' => ['example.com'],
-                    ],
-                ],
-                [
-                    'Location' => '/foo.bar',
-                ],
-            ],
-
-            /**
-             * Relative URL redirect
-             */
-            [
-                'https://example.com/foo.bar',
-                [
-                    'url' => 'https://example.com/pizza/foo.bar',
-                    'headers' => [
-                        'Host' => ['example.com'],
-                    ],
-                ],
-                [
-                    'Location' => '../foo.bar',
-                ],
-            ],
-
-            /**
-             * Different hostname redirect
-             */
-            [
-                'https://www.example.com/',
-                [
-                    'url' => 'https://example.com/',
-                    'headers' => [
-                        'Host' => ['example.com'],
-                    ],
-                ],
-                [
-                    'Location' => 'https://www.example.com/',
-                ],
-            ],
-        ];
+        $this->assertSame($boolean, Utils::hasHeader($headers, $header));
     }
 
     /**
-     * @dataProvider providerRedirectUrl
+     * @dataProvider \WyriHaximus\React\Tests\RingPHP\HttpClient\UtilsProvider::providerHeader
+     */
+    public function testHeader($expected, $input)
+    {
+        $this->assertSame($expected, Utils::header($input[0], $input[1]));
+    }
+
+    /**
+     * @dataProvider \WyriHaximus\React\Tests\RingPHP\HttpClient\UtilsProvider::providerGetHeaderIndex
+     */
+    public function testGetHeaderIndex($expected, $input)
+    {
+        $this->assertSame($expected, Utils::getHeaderIndex($input[0], $input[1]));
+    }
+
+    /**
+     * @dataProvider \WyriHaximus\React\Tests\RingPHP\HttpClient\UtilsProvider::providerPlaceHeader
+     */
+    public function testPlaceHeader($expected, $input)
+    {
+        $this->assertSame($expected, Utils::placeHeader($input[0], $input[1], $input[2]));
+    }
+
+    /**
+     * @dataProvider \WyriHaximus\React\Tests\RingPHP\HttpClient\UtilsProvider::providerRedirectUrl
      */
     public function testRedirectUrl($expected, $request, $headers)
     {
