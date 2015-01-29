@@ -56,7 +56,6 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
      */
     public function testRedirectUrl($expected, $request, $headers)
     {
-
         $this->assertSame($expected, Utils::redirectUrl($request, $headers));
     }
 }
