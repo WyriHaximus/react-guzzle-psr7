@@ -25,7 +25,7 @@ composer require wyrihaximus/react-guzzle-ring
 require 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 $loop = \React\EventLoop\Factory::create();
-$handler = new \WyriHaximus\React\RingPHP\Client\HttpClientAdapter($loop);
+$handler = new \WyriHaximus\React\RingPHP\HttpClientAdapter($loop);
 
 $client = new \GuzzleHttp\Client([
     'handler' => $handler,
