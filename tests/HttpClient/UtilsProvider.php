@@ -251,6 +251,24 @@ class UtilsProvider extends \PHPUnit_Framework_TestCase
             ],
 
             /**
+             * Simple HTTP to HTTPS redirect with only the protocol
+             */
+            [
+                'https://example.com/',
+                [
+                    'url' => 'http://example.com/',
+                    'headers' => [
+                        'Host' => [
+                            'example.com',
+                        ],
+                    ],
+                ],
+                [
+                    'Location' => 'https://',
+                ],
+            ],
+
+            /**
              * Absolute URL redirect
              */
             [

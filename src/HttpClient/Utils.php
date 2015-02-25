@@ -92,6 +92,20 @@ class Utils
 
     public static function redirectUrl(array $request, array $headers)
     {
-        return (string) Url::fromString($request['url'])->combine(static::header($headers, 'location'));
+        $locationUrl = static::header($headers, 'location');
+        try {
+            return (string) Url::fromString($request['url'])->combine($locationUrl);
+        } catch (\InvalidArgumentException $exception) {
+            if (in_array($locationUrl, [
+                'http://',
+                'https://',
+            ])) {
+                $url = Url::fromString($request['url']);
+                $url->setScheme(str_replace('://', '', $locationUrl));
+                return (string) $url;
+            }
+
+            throw $exception;
+        }
     }
 }
