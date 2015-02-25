@@ -381,7 +381,7 @@ class Request
             parse_url($request['url'], PHP_URL_HOST),
         ]);
 
-        (new Request($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
+        (new self($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
             $this->deferred->resolve($response);
         }, function ($error) {
             $this->deferred->reject($error);
