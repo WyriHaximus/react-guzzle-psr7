@@ -369,9 +369,9 @@ class Request
             return;
         }
         if ($request['client']['redirect']['referer']) {
-            $request['headers']['Referer'] = [
+            $request['headers'] = Utils::placeHeader($request['headers'], 'Referer', [
                 $request['url'],
-            ];
+            ]);
         }
         if (!$request['client']['redirect']['strict']) {
             $request['http_method'] = 'GET';
