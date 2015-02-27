@@ -93,15 +93,32 @@ class Utils
     public static function redirectUrl(array $request, array $headers)
     {
         $locationUrl = static::header($headers, 'location');
+
+        if (!is_array($locationUrl)) {
+            return static::attemptRedirectUrl($request['url'], $locationUrl);
+        }
+
+        foreach ($locationUrl as $to) {
+            try {
+                $to = (string) Url::fromString($to);
+                return static::attemptRedirectUrl($request['url'], $to);
+            } catch (\Exception $exception) {}
+        }
+
+        new \InvalidArgumentException('Location header can\'t be an array');
+    }
+
+    protected static function attemptRedirectUrl($from, $to)
+    {
         try {
-            return (string) Url::fromString($request['url'])->combine($locationUrl);
+            return (string) Url::fromString($from)->combine($to);
         } catch (\InvalidArgumentException $exception) {
-            if (in_array($locationUrl, [
+            if (in_array($to, [
                 'http://',
                 'https://',
             ])) {
-                $url = Url::fromString($request['url']);
-                $url->setScheme(str_replace('://', '', $locationUrl));
+                $url = Url::fromString($from);
+                $url->setScheme(str_replace('://', '', $to));
                 return (string) $url;
             }
 

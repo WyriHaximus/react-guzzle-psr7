@@ -323,8 +323,13 @@ class Request
         $this->progress->onResponse($this->httpResponse);
 
         $headers = $this->httpResponse->getHeaders();
-        if (Utils::hasHeader($headers, 'location')) {
-            $this->followRedirect(Utils::redirectUrl($this->request, $headers));
+        try {
+            if (Utils::hasHeader($headers, 'location')) {
+                $this->followRedirect(Utils::redirectUrl($this->request, $headers));
+                return;
+            }
+        } catch (Exception $exception) {
+            $this->deferred->reject($exception);
             return;
         }
 
