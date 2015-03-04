@@ -297,6 +297,7 @@ class Request
     protected function onError(\Exception $error)
     {
         $this->error = $error;
+        $this->deferred->reject($this->error);
     }
 
     /**
