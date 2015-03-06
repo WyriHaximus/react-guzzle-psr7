@@ -50,6 +50,10 @@ $loop->run();
 
 See the [examples](https://github.com/WyriHaximus/ReactGuzzleRing/tree/master/examples) directory for more ways to use this handler.
 
+## Contributing ##
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
 ## License ##
 
 Copyright 2014 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
