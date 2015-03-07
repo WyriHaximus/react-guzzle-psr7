@@ -102,7 +102,8 @@ class Utils
             try {
                 $to = (string) Url::fromString($to);
                 return static::attemptRedirectUrl($request['url'], $to);
-            } catch (\Exception $exception) {}
+            } catch (\Exception $exception) {
+            }
         }
 
         new \InvalidArgumentException('Location header can\'t be an array');
