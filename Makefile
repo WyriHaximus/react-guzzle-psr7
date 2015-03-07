@@ -19,3 +19,6 @@ unit-travis: init
 
 dunit: init
 	./vendor/bin/dunit
+
+dunit-nightly: init
+	./vendor/bin/dunit -c .dunitconfig-nightly

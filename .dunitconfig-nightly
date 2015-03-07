@@ -1,8 +1,6 @@
 # the list of docker images to run against
 images="
-    vectorface/php5.4
-    vectorface/php5.5
-    vectorface/php5.6
+    vectorface/php-nightly
     vectorface/hhvm";
 
 
