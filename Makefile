@@ -1,4 +1,4 @@
-all: oc cs dunit unit
+all: oc cs dunit dunit-nightly unit
 travis: cs unit-travis
 contrib: cs dunit unit
 
