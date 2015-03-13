@@ -363,10 +363,15 @@ class Request
 
         if (!$this->request['client']['stream']) {
             return $request->on('end', function () use ($response) {
-                $this->deferred->resolve($response);
+                $this->resolveResponse($response);
             });
         }
 
+        $this->resolveResponse($response);
+    }
+
+    protected function resolveResponse($response)
+    {
         $this->loop->futureTick(function () use ($response) {
             $this->deferred->resolve($response);
         });
