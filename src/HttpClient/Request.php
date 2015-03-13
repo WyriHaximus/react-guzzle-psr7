@@ -109,7 +109,7 @@ class Request
      * @param LoopInterface $loop
      * @param ProgressInterface $progress
      */
-    public function __construct(
+    protected function __construct(
         array $request,
         ReactHttpClient $httpClient,
         LoopInterface $loop,
@@ -131,9 +131,25 @@ class Request
     }
 
     /**
+     * @param array $request
+     * @param ReactHttpClient $httpClient
+     * @param LoopInterface $loop
+     * @param ProgressInterface $progress
      * @return \React\Promise\Promise
      */
-    public function send()
+    public static function send(
+        array $request,
+        ReactHttpClient $httpClient,
+        LoopInterface $loop,
+        ProgressInterface $progress = null
+    ) {
+        return (new self($request, $httpClient, $loop, $progress))->perform();
+    }
+
+    /**
+     * @return \React\Promise\Promise
+     */
+    protected function perform()
     {
         $this->deferred = new Deferred();
 
@@ -388,7 +404,7 @@ class Request
             parse_url($request['url'], PHP_URL_HOST),
         ]);
 
-        (new self($request, $this->httpClient, $this->loop))->send()->then(function ($response) {
+        self::send($request, $this->httpClient, $this->loop)->then(function ($response) {
             $this->deferred->resolve($response);
         }, function ($error) {
             $this->deferred->reject($error);

@@ -22,6 +22,6 @@ class RequestFactory
 {
     public function create(array $request, HttpClient $httpClient, LoopInterface $loop)
     {
-        return new Request($request, $httpClient, $loop);
+        return Request::send($request, $httpClient, $loop);
     }
 }

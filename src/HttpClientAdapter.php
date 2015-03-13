@@ -125,7 +125,7 @@ class HttpClientAdapter
     {
         $done = false;
         $httpRequest = $this->requestFactory->create($request, $this->httpClient, $this->loop);
-        return new FutureArray($httpRequest->send($this)->then(function ($arg) use (&$done) {
+        return new FutureArray($httpRequest->then(function ($arg) use (&$done) {
             $done = true;
             return $arg;
         }, function ($error) use (&$done) {
