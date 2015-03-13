@@ -342,6 +342,7 @@ class Request
             'headers' => $this->httpResponse->getHeaders(),
             'status' => $this->httpResponse->getCode(),
             'reason' => $this->httpResponse->getReasonPhrase(),
+            'version' => $this->httpResponse->getVersion(),
         ];
 
         if (!$this->request['client']['stream']) {
