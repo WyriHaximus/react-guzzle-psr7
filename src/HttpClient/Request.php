@@ -339,17 +339,6 @@ class Request
     {
         $this->progress->onResponse($this->httpResponse);
 
-        $headers = $this->httpResponse->getHeaders();
-        try {
-            if (Utils::hasHeader($headers, 'location')) {
-                $this->followRedirect(Utils::redirectUrl($this->request, $headers));
-                return;
-            }
-        } catch (Exception $exception) {
-            $this->deferred->reject($exception);
-            return;
-        }
-
         $this->createStream($request);
 
         $response = [
@@ -384,35 +373,5 @@ class Request
             'request' => $request,
             'loop' => $this->loop,
         ]);
-    }
-    /**
-     * @param string $location
-     */
-    protected function followRedirect($location)
-    {
-        $request = $this->request;
-        $request['client']['redirect']['max']--;
-        if ($request['client']['redirect']['max'] <= 0) {
-            $this->deferred->reject(new Exception('Exceeded maximum redirects'));
-            return;
-        }
-        if ($request['client']['redirect']['referer']) {
-            $request['headers'] = Utils::placeHeader($request['headers'], 'Referer', [
-                $request['url'],
-            ]);
-        }
-        if (!$request['client']['redirect']['strict']) {
-            $request['http_method'] = 'GET';
-        }
-        $request['url'] = $location;
-        $request['headers'] = Utils::placeHeader($request['headers'], 'Host', [
-            parse_url($request['url'], PHP_URL_HOST),
-        ]);
-
-        self::send($request, $this->httpClient, $this->loop)->then(function ($response) {
-            $this->deferred->resolve($response);
-        }, function ($error) {
-            $this->deferred->reject($error);
-        });
     }
 }
