@@ -26,7 +26,6 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
     protected $loop;
     protected $requestFactory;
     protected $httpClient;
-    protected $request;
     protected $adapter;
 
     public function setUp()
@@ -40,12 +39,6 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
             'React\HttpClient\Client',
             Phake::mock('React\SocketClient\ConnectorInterface'),
             Phake::mock('React\SocketClient\ConnectorInterface')
-        );
-        $this->request = Phake::partialMock(
-            'WyriHaximus\React\RingPHP\HttpClient\Request',
-            $this->requestArray,
-            $this->httpClient,
-            $this->loop
         );
 
         $this->adapter = new HttpClientAdapter($this->loop, $this->httpClient, null, $this->requestFactory);
