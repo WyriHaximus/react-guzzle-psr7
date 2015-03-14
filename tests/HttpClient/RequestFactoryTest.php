@@ -40,7 +40,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $this->assertInstanceOf(
-            'WyriHaximus\React\RingPHP\HttpClient\Request',
+            'React\Promise\PromiseInterface',
             $this->requestFactory->create(
                 [],
                 Phake::partialMock(

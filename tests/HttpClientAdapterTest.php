@@ -11,6 +11,7 @@
 namespace WyriHaximus\React\Tests\RingPHP;
 
 use Phake;
+use React\Promise\FulfilledPromise;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
 /**
@@ -60,7 +61,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
     public function testSend()
     {
         Phake::when($this->requestFactory)->create($this->requestArray, $this->httpClient, $this->loop)->thenReturn(
-            $this->request
+            new FulfilledPromise()
         );
 
         $adapter = $this->adapter;
@@ -71,8 +72,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
                 $this->requestArray,
                 $this->httpClient,
                 $this->loop
-            ),
-            Phake::verify($this->request, Phake::times(1))->send()
+            )
         );
     }
 

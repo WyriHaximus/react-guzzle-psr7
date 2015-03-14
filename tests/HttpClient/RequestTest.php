@@ -53,7 +53,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         Phake::when($request)->setupListeners($httpRequest)->thenCallParent();
         Phake::when($request)->setConnectionTimeout($httpRequest)->thenReturn(null);
 
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $request->send());
+        $this->assertInstanceOf('React\Promise\PromiseInterface', $request->send($requestArray, $client, $loop, null, $request));
 
         Phake::inOrder(
             Phake::verify($loop)->addTimer(

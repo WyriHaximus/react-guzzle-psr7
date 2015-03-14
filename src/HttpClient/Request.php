@@ -135,15 +135,20 @@ class Request
      * @param ReactHttpClient $httpClient
      * @param LoopInterface $loop
      * @param ProgressInterface $progress
+     * @param Request $requestObject
      * @return \React\Promise\Promise
      */
     public static function send(
         array $request,
         ReactHttpClient $httpClient,
         LoopInterface $loop,
-        ProgressInterface $progress = null
+        ProgressInterface $progress = null,
+        Request $requestObject = null
     ) {
-        return (new self($request, $httpClient, $loop, $progress))->perform();
+        if ($requestObject === null) {
+            $requestObject = new self($request, $httpClient, $loop, $progress);
+        }
+        return $requestObject->perform();
     }
 
     /**
