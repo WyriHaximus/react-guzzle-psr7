@@ -317,6 +317,14 @@ class Request
      */
     protected function onError(\Exception $error)
     {
+        if ($this->requestTimer !== null) {
+            $this->loop->cancelTimer($this->requestTimer);
+        }
+
+        if ($this->connectionTimer !== null) {
+            $this->loop->cancelTimer($this->connectionTimer);
+        }
+
         $this->error = $error;
         $this->deferred->reject($this->error);
     }
