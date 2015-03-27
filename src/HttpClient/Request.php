@@ -330,6 +330,10 @@ class Request
             $this->loop->cancelTimer($this->requestTimer);
         }
 
+        if ($this->connectionTimer !== null) {
+            $this->loop->cancelTimer($this->connectionTimer);
+        }
+
         $this->loop->futureTick(function () {
             if ($this->httpResponse === null) {
                 $this->deferred->reject($this->error);
