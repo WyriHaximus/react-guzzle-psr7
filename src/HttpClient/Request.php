@@ -146,7 +146,7 @@ class Request
         Request $requestObject = null
     ) {
         if ($requestObject === null) {
-            $requestObject = new self($request, $httpClient, $loop, $progress);
+            $requestObject = new static($request, $httpClient, $loop, $progress);
         }
         return $requestObject->perform();
     }
