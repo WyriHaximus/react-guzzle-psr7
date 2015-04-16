@@ -1,12 +1,9 @@
-all: oc cs dunit dunit-nightly unit
+all: cs dunit dunit-nightly unit
 travis: cs unit-travis
 contrib: cs dunit unit
 
 init:
 	if [ ! -d vendor ]; then composer install; fi;
-
-oc: init
-	./vendor/bin/phpcs --standard=phpcs.xml src/
 
 cs: init
 	./vendor/bin/phpcs --standard=PSR2 src/
