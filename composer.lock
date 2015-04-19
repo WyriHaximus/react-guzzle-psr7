@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cb14d09fa3148032998fdf7faae10a22",
+    "hash": "0d9591a5b3b4efe5dd9b00db39b70a9d",
     "packages": [
         {
             "name": "evenement/evenement",
@@ -707,6 +707,51 @@
             "description": "Symfony EventDispatcher Component",
             "homepage": "http://symfony.com",
             "time": "2015-03-13 17:37:22"
+        },
+        {
+            "name": "wyrihaximus/react-guzzle-http-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WyriHaximus/react-guzzle-http-client.git",
+                "reference": "9fbb3b8e9d8ca7bd3ed26ee12839d8ba977ad8e6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WyriHaximus/react-guzzle-http-client/zipball/9fbb3b8e9d8ca7bd3ed26ee12839d8ba977ad8e6",
+                "reference": "9fbb3b8e9d8ca7bd3ed26ee12839d8ba977ad8e6",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/ringphp": "~1.0",
+                "react/http-client": "^0.4"
+            },
+            "require-dev": {
+                "phake/phake": "~1.0",
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "^0.6",
+                "squizlabs/php_codesniffer": "~1.0",
+                "vectorface/dunit": "~2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "WyriHaximus\\React\\Guzzle\\HttpClient\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cees-Jan Kiewiet",
+                    "email": "ceesjank@gmail.com",
+                    "homepage": "http://wyrihaximus.net/"
+                }
+            ],
+            "description": "Asyncronous GuzzleRing adapter powered by react/http-client",
+            "time": "2015-04-19 11:19:08"
         }
     ],
     "packages-dev": [
@@ -2163,7 +2208,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "wyrihaximus/react-guzzle-http-client": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

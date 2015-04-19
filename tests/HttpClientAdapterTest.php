@@ -34,7 +34,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
 
         $this->requestArray = [];
         $this->loop = Phake::mock('React\EventLoop\StreamSelectLoop');
-        $this->requestFactory = Phake::mock('WyriHaximus\React\RingPHP\HttpClient\RequestFactory');
+        $this->requestFactory = Phake::mock('WyriHaximus\React\Guzzle\HttpClient\RequestFactory');
         $this->httpClient = Phake::partialMock(
             'React\HttpClient\Client',
             Phake::mock('React\SocketClient\ConnectorInterface'),
@@ -101,11 +101,11 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapter->setRequestFactory();
         $this->assertInstanceOf(
-            'WyriHaximus\React\RingPHP\HttpClient\RequestFactory',
+            'WyriHaximus\React\Guzzle\HttpClient\RequestFactory',
             $this->adapter->getRequestFactory()
         );
 
-        $mock = Phake::mock('WyriHaximus\React\RingPHP\HttpClient\RequestFactory');
+        $mock = Phake::mock('WyriHaximus\React\Guzzle\HttpClient\RequestFactory');
         $this->adapter->setRequestFactory($mock);
         $this->assertSame($mock, $this->adapter->getRequestFactory());
     }

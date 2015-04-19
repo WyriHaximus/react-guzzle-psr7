@@ -2,15 +2,13 @@
 
 namespace WyriHaximus\React\RingPHP;
 
-use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\FutureArray;
 use React\Dns\Resolver\Factory as DnsFactory;
 use React\Dns\Resolver\Resolver as DnsResolver;
 use React\EventLoop\LoopInterface;
 use React\HttpClient\Client as HttpClient;
 use React\HttpClient\Factory as HttpClientFactory;
-use React\Promise\FulfilledPromise;
-use WyriHaximus\React\RingPHP\HttpClient\RequestFactory;
+use WyriHaximus\React\Guzzle\HttpClient\RequestFactory;
 
 class HttpClientAdapter
 {

@@ -11,8 +11,8 @@
     ],
     "require": {
         "guzzlehttp/ringphp": "~1.0",
-        "react/http-client": "^0.4",
-        "guzzlehttp/guzzle": "~5.0"
+        "guzzlehttp/guzzle": "~5.0",
+        "wyrihaximus/react-guzzle-http-client": "dev-master"
     },
     "require-dev": {
         "satooshi/php-coveralls": "~0.6",
