@@ -15,8 +15,8 @@ matrix:
     - php: hhvm-nightly
 
 before_script:
-  - composer self-update
-  - composer install
+  - composer self-update -q
+  - composer install -q
 
 script: make travis
 
