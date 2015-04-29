@@ -12,7 +12,8 @@
     "require": {
         "guzzlehttp/ringphp": "~1.0",
         "guzzlehttp/guzzle": "~5.0",
-        "wyrihaximus/react-guzzle-http-client": "~1.0"
+        "wyrihaximus/react-guzzle-http-client": "~1.0",
+        "react/dns": "^0.4.1"
     },
     "require-dev": {
         "satooshi/php-coveralls": "^0.6",
