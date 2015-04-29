@@ -121,20 +121,20 @@ class HttpClientAdapter
      */
     public function __invoke(array $request)
     {
-        $done = false;
+        $ready = false;
         $httpRequest = $this->requestFactory->create($request, $this->httpClient, $this->loop);
-        return new FutureArray($httpRequest->then(function ($arg) use (&$done) {
-            $done = true;
+        return new FutureArray($httpRequest->then(function ($arg) use (&$ready) {
+            $ready = true;
             return $arg;
-        }, function ($error) use (&$done) {
-            $done = true;
+        }, function ($error) use (&$ready) {
+            $ready = true;
             return [
                 'error' => $error,
             ];
-        }), function () use (&$done) {
+        }), function () use (&$ready) {
             do {
                 $this->loop->tick();
-            } while (!$done);
+            } while (!$ready);
         });
     }
 }
