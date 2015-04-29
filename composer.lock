@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0d9591a5b3b4efe5dd9b00db39b70a9d",
+    "hash": "7958a2e512b76c645719d2129cca4300",
     "packages": [
         {
             "name": "evenement/evenement",
@@ -710,27 +710,26 @@
         },
         {
             "name": "wyrihaximus/react-guzzle-http-client",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WyriHaximus/react-guzzle-http-client.git",
-                "reference": "9fbb3b8e9d8ca7bd3ed26ee12839d8ba977ad8e6"
+                "reference": "1dfec7ac14a72e19ee7d25c0e5e43af569c5e489"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WyriHaximus/react-guzzle-http-client/zipball/9fbb3b8e9d8ca7bd3ed26ee12839d8ba977ad8e6",
-                "reference": "9fbb3b8e9d8ca7bd3ed26ee12839d8ba977ad8e6",
+                "url": "https://api.github.com/repos/WyriHaximus/react-guzzle-http-client/zipball/1dfec7ac14a72e19ee7d25c0e5e43af569c5e489",
+                "reference": "1dfec7ac14a72e19ee7d25c0e5e43af569c5e489",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/ringphp": "~1.0",
                 "react/http-client": "^0.4"
             },
             "require-dev": {
-                "phake/phake": "~1.0",
+                "phake/phake": "~1.0.6",
                 "phpunit/phpunit": "~4.0",
                 "satooshi/php-coveralls": "^0.6",
-                "squizlabs/php_codesniffer": "~1.0",
+                "squizlabs/php_codesniffer": "~1.5.0",
                 "vectorface/dunit": "~2"
             },
             "type": "library",
@@ -751,7 +750,7 @@
                 }
             ],
             "description": "Asyncronous GuzzleRing adapter powered by react/http-client",
-            "time": "2015-04-19 11:19:08"
+            "time": "2015-04-29 07:45:18"
         }
     ],
     "packages-dev": [
@@ -910,16 +909,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5"
+                "reference": "3132b1f44c7bf2ec4c7eb2d3cb78fdeca760d373"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5",
-                "reference": "8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/3132b1f44c7bf2ec4c7eb2d3cb78fdeca760d373",
+                "reference": "3132b1f44c7bf2ec4c7eb2d3cb78fdeca760d373",
                 "shasum": ""
             },
             "require": {
@@ -966,7 +965,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2015-03-27 19:31:25"
+            "time": "2015-04-27 22:15:08"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1216,16 +1215,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.6.4",
+            "version": "4.6.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "163232991e652e6efed2f8470326fffa61e848e2"
+                "reference": "1c54dd1d9a782d7c8715bb3604cde7b6e23c2614"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/163232991e652e6efed2f8470326fffa61e848e2",
-                "reference": "163232991e652e6efed2f8470326fffa61e848e2",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1c54dd1d9a782d7c8715bb3604cde7b6e23c2614",
+                "reference": "1c54dd1d9a782d7c8715bb3604cde7b6e23c2614",
                 "shasum": ""
             },
             "require": {
@@ -1284,7 +1283,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-04-11 05:23:21"
+            "time": "2015-04-29 05:04:43"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -2208,9 +2207,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "wyrihaximus/react-guzzle-http-client": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

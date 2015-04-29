@@ -12,14 +12,14 @@
     "require": {
         "guzzlehttp/ringphp": "~1.0",
         "guzzlehttp/guzzle": "~5.0",
-        "wyrihaximus/react-guzzle-http-client": "dev-master"
+        "wyrihaximus/react-guzzle-http-client": "~1.0"
     },
     "require-dev": {
-        "satooshi/php-coveralls": "~0.6",
+        "satooshi/php-coveralls": "^0.6",
         "phpunit/phpunit": "~4.0",
-        "phake/phake": "~1.0",
         "vectorface/dunit": "~2",
-        "squizlabs/php_codesniffer": "~1.0"
+        "squizlabs/php_codesniffer": "~1.5.0",
+        "phake/phake": "~1.0.6"
     },
     "autoload": {
         "psr-4": {
