@@ -11,7 +11,10 @@
 namespace WyriHaximus\React\Tests\RingPHP;
 
 use Phake;
+use React\EventLoop\Factory;
+use React\Promise\Deferred;
 use React\Promise\FulfilledPromise;
+use React\Promise\RejectedPromise;
 use WyriHaximus\React\RingPHP\HttpClientAdapter;
 
 /**
@@ -33,7 +36,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->requestArray = [];
-        $this->loop = Phake::mock('React\EventLoop\StreamSelectLoop');
+        $this->loop = Factory::create();
         $this->requestFactory = Phake::mock('WyriHaximus\React\Guzzle\HttpClient\RequestFactory');
         $this->httpClient = Phake::partialMock(
             'React\HttpClient\Client',
@@ -53,12 +56,23 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testSend()
     {
+        $deferred = new Deferred();
+        $this->loop->futureTick(function () use ($deferred) {
+            $deferred->resolve();
+        });
+
         Phake::when($this->requestFactory)->create($this->requestArray, $this->httpClient, $this->loop)->thenReturn(
-            new FulfilledPromise()
+            $deferred->promise()
         );
 
         $adapter = $this->adapter;
-        $adapter($this->requestArray);
+        $futureArray = $adapter($this->requestArray);
+        $this->assertInstanceOf('GuzzleHttp\Ring\Future\FutureArray', $futureArray);
+        $callbackFired = false;
+        $futureArray->then(function () use (&$callbackFired) {
+            $callbackFired = true;
+        });
+        $futureArray->wait();
 
         Phake::inOrder(
             Phake::verify($this->requestFactory, Phake::times(1))->create(
@@ -67,6 +81,36 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
                 $this->loop
             )
         );
+
+        $this->assertTrue($callbackFired);
+    }
+
+    public function testSendFailed()
+    {
+        Phake::when($this->requestFactory)->create($this->requestArray, $this->httpClient, $this->loop)->thenReturn(
+            new RejectedPromise(123)
+        );
+
+        $adapter = $this->adapter;
+        $futureArray = $adapter($this->requestArray);
+        $this->assertInstanceOf('GuzzleHttp\Ring\Future\FutureArray', $futureArray);
+        $callbackFired = false;
+        $futureArray->then(function ($error) use (&$callbackFired) {
+            $this->assertEquals([
+                'error' => 123,
+            ], $error);
+            $callbackFired = true;
+        });
+
+        Phake::inOrder(
+            Phake::verify($this->requestFactory, Phake::times(1))->create(
+                $this->requestArray,
+                $this->httpClient,
+                $this->loop
+            )
+        );
+
+        $this->assertTrue($callbackFired);
     }
 
     public function testSetDnsResolver()
