@@ -1,20 +1,20 @@
-ReactGuzzleRing
+react-guzzle-psr7
 ===============
 
-[![Build Status](https://travis-ci.org/WyriHaximus/ReactGuzzleRing.png)](https://travis-ci.org/WyriHaximus/ReactGuzzleRing)
-[![Latest Stable Version](https://poser.pugx.org/WyriHaximus/react-guzzle-ring/v/stable.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-ring)
-[![Total Downloads](https://poser.pugx.org/WyriHaximus/react-guzzle-ring/downloads.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-ring)
-[![Coverage Status](https://coveralls.io/repos/WyriHaximus/ReactGuzzleRing/badge.png)](https://coveralls.io/r/WyriHaximus/ReactGuzzleRing)
-[![License](https://poser.pugx.org/wyrihaximus/react-guzzle-ring/license.png)](https://packagist.org/packages/wyrihaximus/react-guzzle-ring)
+[![Build Status](https://travis-ci.org/WyriHaximus/react-guzzle-psr7.png)](https://travis-ci.org/WyriHaximus/react-guzzle-psr7)
+[![Latest Stable Version](https://poser.pugx.org/WyriHaximus/react-guzzle-psr7/v/stable.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-psr7)
+[![Total Downloads](https://poser.pugx.org/WyriHaximus/react-guzzle-psr7/downloads.png)](https://packagist.org/packages/WyriHaximus/react-guzzle-psr7)
+[![Coverage Status](https://coveralls.io/repos/WyriHaximus/react-guzzle-psr7/badge.png)](https://coveralls.io/r/WyriHaximus/react-guzzle-psr7)
+[![License](https://poser.pugx.org/wyrihaximus/react-guzzle-psr7/license.png)](https://packagist.org/packages/wyrihaximus/react-guzzle-psr7)
 
-ReactPHP HttpClient Adapter for Guzzle5, for Guzzle4 check [ReactGuzzle](https://github.com/WyriHaximus/ReactGuzzle)
+ReactPHP HttpClient Adapter for Guzzle56, for Guzzle5 check [ReactGuzzleRing](https://github.com/WyriHaximus/ReactGuzzleRing)
 
 ### Installation ###
 
 To install via [Composer](http://getcomposer.org/), use the command below, it will automatically detect the latest version and bind it with `~`.
 
 ```
-composer require wyrihaximus/react-guzzle-ring 
+composer require wyrihaximus/react-guzzle-psr7 
 ```
 
 ### Example ###
@@ -48,7 +48,7 @@ $client->get('http://php.net/', [
 $loop->run();
 ```
 
-See the [examples](https://github.com/WyriHaximus/ReactGuzzleRing/tree/master/examples) directory for more ways to use this handler.
+See the [examples](https://github.com/WyriHaximus/react-guzzle-psr7/tree/master/examples) directory for more ways to use this handler.
 
 ## Contributing ##
 
@@ -56,7 +56,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## License ##
 
-Copyright 2014 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
+Copyright 2015 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
