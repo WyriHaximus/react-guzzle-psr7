@@ -25,22 +25,18 @@ composer require wyrihaximus/react-guzzle-psr7
 require 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 $loop = \React\EventLoop\Factory::create();
-$handler = new \WyriHaximus\React\RingPHP\HttpClientAdapter($loop);
+$handler = new \WyriHaximus\React\GuzzlePsr7\HttpClientAdapter($loop);
 
 $client = new \GuzzleHttp\Client([
-    'handler' => $handler,
+    'handler' => \GuzzleHttp\HandlerStack::create($handler),
 ]);
 
-$client->get('http://github.com/', [ // This will redirect to https://github.com/
-    'future' => true,
-])->then(function ($response) {
+$client->getAsync('http://github.com/')->then(function ($response) {
     var_export($response);
     var_export((string) $response->getBody());
 });
 
-$client->get('http://php.net/', [
-    'future' => true,
-])->then(function ($response) {
+$client->getAsync('http://php.net/')->then(function ($response) {
     var_export($response);
     var_export((string) $response->getBody());
 });
