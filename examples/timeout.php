@@ -3,18 +3,18 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use React\EventLoop\Factory;
-use WyriHaximus\React\RingPHP\HttpClientAdapter;
+use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 $loop = Factory::create();
 
 $guzzle = new Client([
-    'handler' => new HttpClientAdapter($loop),
+    'handler' => HandlerStack::create(new HttpClientAdapter($loop)),
 ]);
 
 $guzzle->get('http://www.amazon.com/', [
-    'timeout' => 0.001,
-    'future' => true,
+    'timeout' => 300,
 ])->then(function() {
     echo 'Amazon completed' . PHP_EOL;
 }, function(exception $error) {

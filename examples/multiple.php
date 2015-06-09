@@ -3,13 +3,14 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use React\EventLoop\Factory;
-use WyriHaximus\React\RingPHP\HttpClientAdapter;
+use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 $loop = Factory::create();
 
 $guzzle = new Client([
-    'handler' => new HttpClientAdapter($loop),
+    'handler' => HandlerStack::create(new HttpClientAdapter($loop)),
 ]);
 
 foreach ([
@@ -32,9 +33,7 @@ foreach ([
 ] as $site) {
     $name = $site['name'];
 
-    $guzzle->get($site['url'], [
-        'future' => true,
-    ])->then(function() use ($name) {
+    $guzzle->getAsync($site['url'])->then(function() use ($name) {
         echo $name . ' completed' . PHP_EOL;
     }, function(Exception $error) use ($name) {
         echo $name . ' error: ' . $error->getMessage() . PHP_EOL;

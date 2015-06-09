@@ -8,14 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace WyriHaximus\React\Tests\RingPHP;
+namespace WyriHaximus\React\Tests\GuzzlePsr7;
 
 use Phake;
 use React\EventLoop\Factory;
 use React\Promise\Deferred;
 use React\Promise\FulfilledPromise;
 use React\Promise\RejectedPromise;
-use WyriHaximus\React\RingPHP\HttpClientAdapter;
+use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 /**
  * Class HttpClientAdapterTest

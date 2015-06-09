@@ -1,8 +1,12 @@
 <?php
 
-namespace WyriHaximus\React\RingPHP;
+namespace WyriHaximus\React\GuzzlePsr7;
 
+use GuzzleHttp\Promise\Promise;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Ring\Future\FutureArray;
+use Psr\Http\Message\RequestInterface;
 use React\Dns\Resolver\Factory as DnsFactory;
 use React\Dns\Resolver\Resolver as DnsResolver;
 use React\EventLoop\LoopInterface;
@@ -116,25 +120,47 @@ class HttpClientAdapter
     }
 
     /**
-     * @param array $request
-     * @return FutureArray
+     * @param Request $request
+     * @return static
      */
-    public function __invoke(array $request)
+    public function __invoke(Request $request)
     {
         $ready = false;
-        $httpRequest = $this->requestFactory->create($request, $this->httpClient, $this->loop);
-        return new FutureArray($httpRequest->then(function ($arg) use (&$ready) {
-            $ready = true;
-            return $arg;
-        }, function ($error) use (&$ready) {
-            $ready = true;
-            return [
-                'error' => $error,
-            ];
-        }), function () use (&$ready) {
+        $promise = new Promise(function () use (&$ready) {
             do {
                 $this->loop->tick();
             } while (!$ready);
         });
+
+        $request = static::transformRequest($request);
+
+        $this->requestFactory->create($request, $this->httpClient, $this->loop)->
+            then(
+                function (array $response) use (&$ready, $promise) {
+                    $ready = true;
+                    $promise->resolve(static::transformResponse($response));
+                }
+            )
+        ;
+
+        return $promise;
+    }
+
+    protected static function transformRequest(RequestInterface $request)
+    {
+        return [
+            'http_method' => $request->getMethod(),
+            'url' => (string)$request->getUri(),
+            'headers' => $request->getHeaders(),
+            'body' => (string)$request->getBody(),
+            'client' => [
+                'stream' => false,
+            ],
+        ];
+    }
+
+    protected static function transformResponse(array $response)
+    {
+        return new Response($response['status'], $response['headers'], $response['body']);
     }
 }

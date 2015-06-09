@@ -4,19 +4,13 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use React\EventLoop\Factory;
 use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 $loop = Factory::create();
 
-(new Client([
+echo (new Client([
     'handler' => HandlerStack::create(new HttpClientAdapter($loop)),
-]))->get('http://www.google.com/robots.txt', [
-    'save_to' => 'google-robots.txt',
-])->then(function() {
-    echo 'Done!' . PHP_EOL;
-}, function(Exception $error) {
-    echo 'Error: ' . var_export($error, true) . PHP_EOL;
-});
+]))->get('http://blog.wyrihaximus.net/')->getBody()->getContents(), PHP_EOL;
 
-$loop->run();

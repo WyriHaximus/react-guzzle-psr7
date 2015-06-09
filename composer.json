@@ -1,6 +1,6 @@
 {
-    "name": "wyrihaximus/react-guzzle-ring",
-    "description": "Asyncronous GuzzleRing adapter powered by react/http-client",
+    "name": "wyrihaximus/react-guzzle-psr7",
+    "description": "Asyncronous Guzzle (PSR7) adapter powered by react/http-client",
     "license": "MIT",
     "authors": [
         {
@@ -10,9 +10,8 @@
         }
     ],
     "require": {
-        "guzzlehttp/ringphp": "~1.0",
-        "guzzlehttp/guzzle": "~5.0",
-        "wyrihaximus/react-guzzle-http-client": "~1.0",
+        "guzzlehttp/guzzle": "~6.0",
+        "wyrihaximus/react-guzzle-http-client": "~2.0",
         "react/dns": "^0.4.1"
     },
     "require-dev": {
@@ -24,12 +23,12 @@
     },
     "autoload": {
         "psr-4": {
-            "WyriHaximus\\React\\RingPHP\\": "src/"
+            "WyriHaximus\\React\\GuzzlePsr7\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "WyriHaximus\\React\\Tests\\RingPHP\\": "tests/"
+            "WyriHaximus\\React\\Tests\\GuzzlePsr7\\": "tests/"
         }
     }
 }
