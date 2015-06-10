@@ -5,7 +5,6 @@ namespace WyriHaximus\React\GuzzlePsr7;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Ring\Future\FutureArray;
 use Psr\Http\Message\RequestInterface;
 use React\Dns\Resolver\Factory as DnsFactory;
 use React\Dns\Resolver\Resolver as DnsResolver;
@@ -120,10 +119,11 @@ class HttpClientAdapter
     }
 
     /**
-     * @param Request $request
-     * @return static
+     * @param RequestInterface $request
+     * @param array $options
+     * @return Promise
      */
-    public function __invoke(Request $request)
+    public function __invoke(RequestInterface $request, array $options)
     {
         $ready = false;
         $promise = new Promise(function () use (&$ready) {
@@ -132,7 +132,7 @@ class HttpClientAdapter
             } while (!$ready);
         });
 
-        $request = static::transformRequest($request);
+        $request = static::transformRequest($request, $options);
 
         $this->requestFactory->create($request, $this->httpClient, $this->loop)->
             then(
@@ -146,7 +146,7 @@ class HttpClientAdapter
         return $promise;
     }
 
-    protected static function transformRequest(RequestInterface $request)
+    protected static function transformRequest(RequestInterface $request, array $options)
     {
         return [
             'http_method' => $request->getMethod(),
@@ -155,7 +155,7 @@ class HttpClientAdapter
             'body' => (string)$request->getBody(),
             'client' => [
                 'stream' => false,
-            ],
+            ] + $options,
         ];
     }
 
