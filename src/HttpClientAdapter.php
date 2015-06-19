@@ -136,6 +136,10 @@ class HttpClientAdapter
                 function (ResponseInterface $response) use (&$ready, $promise) {
                     $ready = true;
                     $promise->resolve($response);
+                },
+                function ($error) use (&$ready, $promise) {
+                    $ready = true;
+                    $promise->reject($error);
                 }
             )
         ;
