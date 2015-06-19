@@ -136,14 +136,25 @@ class HttpClientAdapter
                 function (ResponseInterface $response) use (&$ready, $promise) {
                     $ready = true;
                     $promise->resolve($response);
+
+                    $this->invokeQueue();
                 },
                 function ($error) use (&$ready, $promise) {
                     $ready = true;
                     $promise->reject($error);
+
+                    $this->invokeQueue();
                 }
             )
         ;
 
         return $promise;
+    }
+
+    protected function invokeQueue()
+    {
+        $this->loop->addTimer(0.01, function () {
+            \GuzzleHttp\Promise\queue()->run();
+        });
     }
 }
