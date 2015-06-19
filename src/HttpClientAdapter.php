@@ -4,6 +4,7 @@ namespace WyriHaximus\React\GuzzlePsr7;
 
 use GuzzleHttp\Promise\Promise;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use React\Dns\Resolver\Factory as DnsFactory;
 use React\Dns\Resolver\Resolver as DnsResolver;
 use React\EventLoop\LoopInterface;
@@ -132,7 +133,7 @@ class HttpClientAdapter
 
         $this->requestFactory->create($request, $options, $this->httpClient, $this->loop)->
             then(
-                function (array $response) use (&$ready, $promise) {
+                function (ResponseInterface $response) use (&$ready, $promise) {
                     $ready = true;
                     $promise->resolve($response);
                 }
