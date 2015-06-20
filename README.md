@@ -17,7 +17,9 @@ To install via [Composer](http://getcomposer.org/), use the command below, it wi
 composer require wyrihaximus/react-guzzle-psr7 
 ```
 
-### Example ###
+### Examples ###
+
+#### Asynchronous ####
 
 ```php
 <?php
@@ -42,6 +44,23 @@ $client->getAsync('http://php.net/')->then(function ($response) {
 });
 
 $loop->run();
+```
+
+#### Synchronous ####
+
+```php
+<?php
+
+require 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
+$loop = \React\EventLoop\Factory::create();
+$handler = new \WyriHaximus\React\GuzzlePsr7\HttpClientAdapter($loop);
+
+$client = new \GuzzleHttp\Client([
+    'handler' => \GuzzleHttp\HandlerStack::create($handler),
+]);
+
+var_export((string) $client->get('http://github.com/')->getBody());
 ```
 
 See the [examples](https://github.com/WyriHaximus/react-guzzle-psr7/tree/master/examples) directory for more ways to use this handler.
