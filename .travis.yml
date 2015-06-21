@@ -36,9 +36,9 @@ matrix:
 
 before_script:
   - composer self-update -q
-  - if [ -z "$dependencies" ]; then composer install -q; fi;
-  - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest -n -q; fi;
-  - if [ "$dependencies" = "highest" ]; then composer update -n -q; fi;
+  - if [ -z "$dependencies" ]; then composer install; fi;
+  - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest -n; fi;
+  - if [ "$dependencies" = "highest" ]; then composer update -n; fi;
 
 script: make travis
 
