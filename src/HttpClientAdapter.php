@@ -15,6 +15,11 @@ use WyriHaximus\React\Guzzle\HttpClient\RequestFactory;
 class HttpClientAdapter
 {
     /**
+     * @var numeric
+     */
+    const QUEUE_TIMER_INTERVAL = 0.01;
+
+    /**
      * @var LoopInterface
      */
     protected $loop;
@@ -153,7 +158,7 @@ class HttpClientAdapter
 
     protected function invokeQueue()
     {
-        $this->loop->addTimer(0.01, function () {
+        $this->loop->addTimer(static::QUEUE_TIMER_INTERVAL, function () {
             \GuzzleHttp\Promise\queue()->run();
         });
     }
