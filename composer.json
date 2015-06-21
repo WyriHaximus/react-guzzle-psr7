@@ -11,7 +11,7 @@
     ],
     "require": {
         "guzzlehttp/guzzle": "~6.0",
-        "wyrihaximus/react-guzzle-http-client": "~2.0",
+        "wyrihaximus/react-guzzle-http-client": "dev-master",
         "react/dns": "^0.4.1"
     },
     "require-dev": {
