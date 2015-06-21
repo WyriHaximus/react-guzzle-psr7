@@ -90,6 +90,45 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($callbackFired);
     }
 
+    public function testSendSync()
+    {
+        $deferred = new Deferred();
+        $responseMock = Phake::mock('Psr\Http\Message\ResponseInterface');
+        Phake::when($this->requestFactory)->create(
+            $this->request,
+            [],
+            $this->httpClient,
+            $this->loop
+        )->thenReturn(
+            $deferred->promise()
+        );
+
+        $this->loop->futureTick(function () use ($deferred, $responseMock) {
+            $deferred->resolve($responseMock);
+        });
+
+        $callbackFired = false;
+        $adapter = $this->adapter;
+        $promise = $adapter($this->request, []);
+        $promise->then(function ($response) use (&$callbackFired, $responseMock) {
+            $this->assertSame($responseMock, $response);
+            $callbackFired = true;
+        });
+
+        $promise->wait();
+
+        Phake::inOrder(
+            Phake::verify($this->requestFactory, Phake::times(1))->create(
+                $this->request,
+                $this->requestArray,
+                $this->httpClient,
+                $this->loop
+            )
+        );
+
+        $this->assertTrue($callbackFired);
+    }
+
     public function testSendFailed()
     {
         $exception = new \Exception(123);
