@@ -10,6 +10,7 @@
  */
 namespace WyriHaximus\React\Tests\GuzzlePsr7;
 
+use GuzzleHttp\Psr7\Request;
 use Phake;
 use React\EventLoop\Factory;
 use React\Promise\Deferred;
@@ -25,6 +26,7 @@ use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
 {
 
+    protected $request;
     protected $requestArray;
     protected $loop;
     protected $requestFactory;
@@ -35,6 +37,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
+        $this->request = new Request('GET', 'http://example.com', [], '');
         $this->requestArray = [];
         $this->loop = Factory::create();
         $this->requestFactory = Phake::mock('WyriHaximus\React\Guzzle\HttpClient\RequestFactory');
@@ -56,26 +59,28 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testSend()
     {
-        $deferred = new Deferred();
-        $this->loop->futureTick(function () use ($deferred) {
-            $deferred->resolve();
-        });
-
-        Phake::when($this->requestFactory)->create($this->requestArray, $this->httpClient, $this->loop)->thenReturn(
-            $deferred->promise()
+        $responseMock = Phake::mock('Psr\Http\Message\ResponseInterface');
+        Phake::when($this->requestFactory)->create(
+            $this->request,
+            [],
+            $this->httpClient,
+            $this->loop
+        )->thenReturn(
+            new FulfilledPromise($responseMock)
         );
 
-        $adapter = $this->adapter;
-        $futureArray = $adapter($this->requestArray);
-        $this->assertInstanceOf('GuzzleHttp\Ring\Future\FutureArray', $futureArray);
         $callbackFired = false;
-        $futureArray->then(function () use (&$callbackFired) {
+        $adapter = $this->adapter;
+        $adapter($this->request, [])->then(function ($response) use (&$callbackFired, $responseMock) {
+            $this->assertSame($responseMock, $response);
             $callbackFired = true;
         });
-        $futureArray->wait();
+
+        $this->loop->run();
 
         Phake::inOrder(
             Phake::verify($this->requestFactory, Phake::times(1))->create(
+                $this->request,
                 $this->requestArray,
                 $this->httpClient,
                 $this->loop
@@ -87,24 +92,29 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testSendFailed()
     {
-        Phake::when($this->requestFactory)->create($this->requestArray, $this->httpClient, $this->loop)->thenReturn(
-            new RejectedPromise(123)
+        $exception = new \Exception(123);
+        Phake::when($this->requestFactory)->create(
+            $this->request,
+            [],
+            $this->httpClient,
+            $this->loop
+        )->thenReturn(
+            new RejectedPromise($exception)
         );
 
-        $adapter = $this->adapter;
-        $futureArray = $adapter($this->requestArray);
-        $this->assertInstanceOf('GuzzleHttp\Ring\Future\FutureArray', $futureArray);
         $callbackFired = false;
-        $futureArray->then(function ($error) use (&$callbackFired) {
-            $this->assertEquals([
-                'error' => 123,
-            ], $error);
+        $adapter = $this->adapter;
+        $adapter($this->request, [])->then(null, function ($error) use (&$callbackFired, &$exception) {
+            $this->assertSame($exception, $error);
             $callbackFired = true;
         });
 
+        $this->loop->run();
+
         Phake::inOrder(
             Phake::verify($this->requestFactory, Phake::times(1))->create(
-                $this->requestArray,
+                $this->request,
+                [],
                 $this->httpClient,
                 $this->loop
             )
