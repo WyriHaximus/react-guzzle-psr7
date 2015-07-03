@@ -1,8 +1,5 @@
 language: php
 
-## Run on container infrastructure
-sudo: false
-
 ## Cache composer bits
 cache:
   directories:
