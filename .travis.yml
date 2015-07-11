@@ -44,9 +44,7 @@ before_script:
 script: make travis
 
 ## Send coverage report to scrutinizer
-after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover ./build/logs/clover.xml
+after_script: make travis-coverage
 
 ## Notify my site of our current status
 notifications:
