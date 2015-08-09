@@ -7,7 +7,7 @@ react-guzzle-psr7
 [![Coverage Status](https://coveralls.io/repos/WyriHaximus/react-guzzle-psr7/badge.png)](https://coveralls.io/r/WyriHaximus/react-guzzle-psr7)
 [![License](https://poser.pugx.org/wyrihaximus/react-guzzle-psr7/license.png)](https://packagist.org/packages/wyrihaximus/react-guzzle-psr7)
 
-ReactPHP HttpClient Adapter for Guzzle56, for Guzzle5 check [ReactGuzzleRing](https://github.com/WyriHaximus/ReactGuzzleRing)
+ReactPHP HttpClient Adapter for Guzzle6, for Guzzle5 check [ReactGuzzleRing](https://github.com/WyriHaximus/ReactGuzzleRing)
 
 ### Installation ###
 
