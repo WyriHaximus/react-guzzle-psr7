@@ -11,7 +11,7 @@ $loop = Factory::create();
 
 (new Client([
     'handler' => HandlerStack::create(new HttpClientAdapter($loop)),
-]))->get('http://www.google.com/robots.txt', [
+]))->getAsync('http://www.google.com/robots.txt', [
     'save_to' => 'google-robots.txt',
 ])->then(function() {
     echo 'Done!' . PHP_EOL;

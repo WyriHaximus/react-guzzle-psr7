@@ -12,7 +12,7 @@ $loop = Factory::create();
 
 (new Client([
     'handler' => HandlerStack::create(new HttpClientAdapter($loop)),
-]))->get('http://blog.wyrihaximus.net/', [
+]))->getAsync('http://blog.wyrihaximus.net/', [
     'stream' => true,
 ])->then(function(Response $response) { // Success callback
     $body = $response->getBody();

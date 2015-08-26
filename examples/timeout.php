@@ -9,11 +9,9 @@ use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 $loop = Factory::create();
 
-$guzzle = new Client([
+(new Client([
     'handler' => HandlerStack::create(new HttpClientAdapter($loop)),
-]);
-
-$guzzle->get('http://www.amazon.com/', [
+]))->getAsync('http://www.amazon.com/', [
     'timeout' => 300,
 ])->then(function() {
     echo 'Amazon completed' . PHP_EOL;

@@ -12,7 +12,7 @@ $loop = Factory::create();
 
 (new Client([
     'handler' => HandlerStack::create(new HttpClientAdapter($loop)),
-]))->get('http://www.wyrihaximus.net/')->then(function(Response $response) { // Success callback
+]))->getAsync('http://www.wyrihaximus.net/')->then(function(Response $response) { // Success callback
     //var_export($response);die();
     echo $response->getEffectiveUrl(), PHP_EOL;
 }, function(Exception $e) { // Success callback
