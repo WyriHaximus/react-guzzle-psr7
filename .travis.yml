@@ -3,7 +3,6 @@ language: php
 ## Cache composer bits
 cache:
   directories:
-    - vendor
     - $HOME/.composer/cache
 
 ## PHP versions we test against
