@@ -57,7 +57,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
     {
         parent::tearDown();
 
-        unset($this->adapter, $this->request, $this->httpClient, $this->requestFactory, $this->loop);
+        unset($this->adapter, $this->request, $this->httpClient, $this->requestFactory, $this->dnsResolver, $this->loop);
     }
 
     public function testSend()
