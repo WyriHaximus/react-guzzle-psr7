@@ -29,5 +29,11 @@
         "psr-4": {
             "WyriHaximus\\React\\Tests\\GuzzlePsr7\\": "tests/"
         }
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "5.5"
+        }
     }
 }
