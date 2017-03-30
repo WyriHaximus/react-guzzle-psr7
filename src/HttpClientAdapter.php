@@ -136,7 +136,7 @@ class HttpClientAdapter
             } while (!$ready);
         });
 
-        $this->requestFactory->create($request, $options, $this->httpClient, $this->loop)->
+        $this->requestFactory->create($request, $options, $this->dnsResolver, $this->httpClient, $this->loop)->
             then(
                 function (ResponseInterface $response) use (&$ready, $promise) {
                     $ready = true;

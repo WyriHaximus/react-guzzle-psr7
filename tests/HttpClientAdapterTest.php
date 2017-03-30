@@ -12,6 +12,7 @@ namespace WyriHaximus\React\Tests\GuzzlePsr7;
 
 use GuzzleHttp\Psr7\Request;
 use Phake;
+use React\Dns\Resolver\Factory as ResolverFactory;
 use React\EventLoop\Factory;
 use React\Promise\Deferred;
 use React\Promise\FulfilledPromise;
@@ -30,6 +31,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
     protected $requestArray;
     protected $loop;
     protected $requestFactory;
+    protected $dnsResolver;
     protected $httpClient;
     protected $adapter;
 
@@ -41,6 +43,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         $this->requestArray = [];
         $this->loop = Factory::create();
         $this->requestFactory = Phake::mock('WyriHaximus\React\Guzzle\HttpClient\RequestFactory');
+        $this->dnsResolver = (new ResolverFactory())->createCached('8.8.8.8', $this->loop);
         $this->httpClient = Phake::partialMock(
             'React\HttpClient\Client',
             Phake::mock('React\SocketClient\ConnectorInterface'),
@@ -54,7 +57,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
     {
         parent::tearDown();
 
-        unset($this->adapter, $this->request, $this->httpClient, $this->requestFactory, $this->loop);
+        unset($this->adapter, $this->request, $this->httpClient, $this->requestFactory, $this->dnsResolver, $this->loop);
     }
 
     public function testSend()
@@ -63,6 +66,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->requestFactory)->create(
             $this->request,
             [],
+            $this->dnsResolver,
             $this->httpClient,
             $this->loop
         )->thenReturn(
@@ -82,6 +86,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
             Phake::verify($this->requestFactory, Phake::times(1))->create(
                 $this->request,
                 $this->requestArray,
+                $this->dnsResolver,
                 $this->httpClient,
                 $this->loop
             )
@@ -97,6 +102,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->requestFactory)->create(
             $this->request,
             [],
+            $this->dnsResolver,
             $this->httpClient,
             $this->loop
         )->thenReturn(
@@ -121,6 +127,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
             Phake::verify($this->requestFactory, Phake::times(1))->create(
                 $this->request,
                 $this->requestArray,
+                $this->dnsResolver,
                 $this->httpClient,
                 $this->loop
             )
@@ -135,6 +142,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->requestFactory)->create(
             $this->request,
             [],
+            $this->dnsResolver,
             $this->httpClient,
             $this->loop
         )->thenReturn(
@@ -154,6 +162,7 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
             Phake::verify($this->requestFactory, Phake::times(1))->create(
                 $this->request,
                 [],
+                $this->dnsResolver,
                 $this->httpClient,
                 $this->loop
             )

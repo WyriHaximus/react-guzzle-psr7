@@ -15,11 +15,12 @@ $resolver = (new ResolverFactory())->createCached('8.8.8.8', $loop); // Specify 
 (new Client([
     'handler' => HandlerStack::create(new HttpClientAdapter($loop, null, $resolver)),
 ]))->getAsync('https://api.ipify.org?format=json', [
-    'proxy' => '127.0.0.1:9050',
+    'proxy' => 'socks5://127.0.0.1:8080/', // SOCKS proxy, support socks, socks4, socks4a, and socks5 as schema
+    //'proxy' => 'http://127.0.0.1:8080/', // HTTP proxy
 ])->then(function(ResponseInterface $response) { // Success callback
     echo $response->getBody()->getContents(), PHP_EOL;
 }, function(Exception $error) { // Error callback
-    echo $error->getMessage(), PHP_EOL;
+    echo (string)$error, PHP_EOL;
 });
 
 $loop->run();
