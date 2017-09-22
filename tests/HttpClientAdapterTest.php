@@ -44,11 +44,19 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         $this->loop = Factory::create();
         $this->requestFactory = Phake::mock('WyriHaximus\React\Guzzle\HttpClient\RequestFactory');
         $this->dnsResolver = (new ResolverFactory())->createCached('8.8.8.8', $this->loop);
-        $this->httpClient = Phake::partialMock(
-            'React\HttpClient\Client',
-            Phake::mock('React\SocketClient\ConnectorInterface'),
-            Phake::mock('React\SocketClient\ConnectorInterface')
-        );
+        if (class_exists('React\HttpClient\Factory')) {
+            $this->httpClient = Phake::partialMock(
+                'React\HttpClient\Client',
+                Phake::mock('React\SocketClient\ConnectorInterface'),
+                Phake::mock('React\SocketClient\ConnectorInterface')
+            );
+        } else {
+            $this->httpClient = Phake::partialMock(
+                'React\HttpClient\Client',
+                $this->loop,
+                Phake::mock('React\Socket\ConnectorInterface')
+            );
+        }
 
         $this->adapter = new HttpClientAdapter($this->loop, $this->httpClient, null, $this->requestFactory);
     }
@@ -189,12 +197,20 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapter->setHttpClient();
         $this->assertInstanceOf('React\HttpClient\Client', $this->adapter->getHttpClient());
+        if (class_exists('React\HttpClient\Factory')) {
+            $mock = Phake::partialMock(
+                'React\HttpClient\Client',
+                Phake::mock('React\SocketClient\ConnectorInterface'),
+                Phake::mock('React\SocketClient\ConnectorInterface')
+            );
+        } else {
+            $mock = Phake::partialMock(
+                'React\HttpClient\Client',
+                Factory::create(),
+                Phake::mock('React\Socket\ConnectorInterface')
+            );
+        }
 
-        $mock = Phake::partialMock(
-            'React\HttpClient\Client',
-            Phake::mock('React\SocketClient\ConnectorInterface'),
-            Phake::mock('React\SocketClient\ConnectorInterface')
-        );
         $this->adapter->setHttpClient($mock);
         $this->assertSame($mock, $this->adapter->getHttpClient());
     }
