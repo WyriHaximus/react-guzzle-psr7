@@ -146,8 +146,16 @@ class HttpClientAdapter
         $ready = false;
         $promise = new Promise(function () use (&$ready) {
             do {
-                $this->loop->tick();
+                $this->loop->stop();
+                $this->loop->futureTick(function () {
+                    $this->loop->stop();
+                });
+                $this->loop->run();
             } while (!$ready);
+            $this->loop->futureTick(function () {
+                $this->loop->stop();
+                $this->loop->run();
+            });
         });
 
         $this->requestFactory->create($request, $options, $this->dnsResolver, $this->httpClient, $this->loop)->
