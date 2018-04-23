@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use React\Dns\Resolver\Factory as DnsFactory;
 use React\Dns\Resolver\Resolver as DnsResolver;
 use React\EventLoop\LoopInterface;
+use React\EventLoop\Timer\TimerInterface;
 use React\HttpClient\Client as HttpClient;
 use React\HttpClient\Client;
 use React\HttpClient\Factory as HttpClientFactory;
@@ -174,6 +175,14 @@ class HttpClientAdapter
                 }
             )
         ;
+
+        /** @var TimerInterface $timer */
+        $timer = $this->loop->addPeriodicTimer(static::QUEUE_TIMER_INTERVAL, function () use (&$ready, &$timer) {
+            $this->invokeQueue();
+            if ($ready) {
+                $this->loop->cancelTimer($timer);
+            }
+        });
 
         return $promise;
     }
