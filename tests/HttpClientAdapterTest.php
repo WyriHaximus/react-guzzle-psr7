@@ -10,6 +10,7 @@
  */
 namespace WyriHaximus\React\Tests\GuzzlePsr7;
 
+use Clue\React\Buzz\Message\ResponseException;
 use GuzzleHttp\Psr7\Request;
 use Phake;
 use React\Dns\Resolver\Factory as ResolverFactory;
@@ -17,6 +18,7 @@ use React\EventLoop\Factory;
 use React\Promise\Deferred;
 use React\Promise\FulfilledPromise;
 use React\Promise\RejectedPromise;
+use RingCentral\Psr7\Response;
 use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 /**
@@ -170,6 +172,48 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
             Phake::verify($this->requestFactory, Phake::times(1))->create(
                 $this->request,
                 [],
+                $this->dnsResolver,
+                $this->httpClient,
+                $this->loop
+            )
+        );
+
+        $this->assertTrue($callbackFired);
+    }
+
+    public function testSendFailedFollowsHttpErrors()
+    {
+        $response = new Response(404);
+        $exception = new ResponseException($response);
+        Phake::when($this->requestFactory)->create(
+            $this->request,
+            [
+                'http_errors' => false,
+            ],
+            $this->dnsResolver,
+            $this->httpClient,
+            $this->loop
+        )->thenReturn(
+            new RejectedPromise($exception)
+        );
+
+        $callbackFired = false;
+        $adapter = $this->adapter;
+        $adapter($this->request, [
+            'http_errors' => false,
+        ])->then(function ($rsp) use (&$callbackFired, &$response) {
+            $this->assertSame($response, $rsp);
+            $callbackFired = true;
+        });
+
+        $this->loop->run();
+
+        Phake::inOrder(
+            Phake::verify($this->requestFactory, Phake::times(1))->create(
+                $this->request,
+                [
+                    'http_errors' => false,
+                ],
                 $this->dnsResolver,
                 $this->httpClient,
                 $this->loop

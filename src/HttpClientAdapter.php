@@ -2,6 +2,7 @@
 
 namespace WyriHaximus\React\GuzzlePsr7;
 
+use Clue\React\Buzz\Message\ResponseException;
 use GuzzleHttp\Promise\Promise;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -167,9 +168,16 @@ class HttpClientAdapter
 
                     $this->invokeQueue();
                 },
-                function ($error) use (&$ready, $promise) {
+                function ($error) use (&$ready, $promise, $options) {
                     $ready = true;
-                    $promise->reject($error);
+                    if (isset($options['http_errors']) &&
+                        $options['http_errors'] === false &&
+                        $error instanceof ResponseException
+                    ) {
+                        $promise->resolve($error->getResponse());
+                    } else {
+                        $promise->reject($error);
+                    }
 
                     $this->invokeQueue();
                 }
