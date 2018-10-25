@@ -189,6 +189,7 @@ class HttpClientAdapter
             $this->invokeQueue();
             if ($ready) {
                 $this->loop->cancelTimer($timer);
+                self::keepInvokingQueueUntillItsDone($this->loop);
             }
         });
 
@@ -197,8 +198,18 @@ class HttpClientAdapter
 
     protected function invokeQueue()
     {
-        $this->loop->addTimer(static::QUEUE_TIMER_INTERVAL, function () {
+        $this->loop->futureTick(function () {
             \GuzzleHttp\Promise\queue()->run();
+        });
+    }
+
+    protected static function keepInvokingQueueUntillItsDone(LoopInterface $loop)
+    {
+        $timer = $loop->addPeriodicTimer(static::QUEUE_TIMER_INTERVAL, function () use (&$timer, $loop) {
+            \GuzzleHttp\Promise\queue()->run();
+            if (\GuzzleHttp\Promise\queue()->isEmpty()) {
+                $loop->cancelTimer($timer);
+            }
         });
     }
 }
