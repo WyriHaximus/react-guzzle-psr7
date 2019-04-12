@@ -147,6 +147,12 @@ class HttpClientAdapter
     {
         $ready = false;
         $promise = new Promise(function () use (&$ready) {
+            trigger_error(
+                'Using Promise::wait with the ReactPHP handler is deprecated due to incompatibilities in the latest ' .
+                'event loop versions. See ' .
+                'https://github.com/WyriHaximus/react-guzzle-psr7/wiki/Promise-wait-alternatives for alternatives.',
+                E_USER_DEPRECATED
+            );
             do {
                 $this->loop->stop();
                 $this->loop->futureTick(function () {

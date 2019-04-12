@@ -36,10 +36,14 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
     protected $dnsResolver;
     protected $httpClient;
     protected $adapter;
+    private $errors;
 
     public function setUp()
     {
         parent::setUp();
+
+        $this->errors = [];
+        set_error_handler([$this, 'errorHandler']);
 
         $this->request = new Request('GET', 'http://example.com', [], '');
         $this->requestArray = [];
@@ -63,9 +67,16 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         $this->adapter = new HttpClientAdapter($this->loop, $this->httpClient, null, $this->requestFactory);
     }
 
+    public function errorHandler($errno, $errstr, $errfile, $errline, $errcontext)
+    {
+        $this->errors[] = [$errno, $errstr, $errfile, $errline, $errcontext];
+    }
+
     public function tearDown()
     {
         parent::tearDown();
+
+        restore_error_handler();
 
         unset($this->adapter, $this->request, $this->httpClient, $this->requestFactory, $this->dnsResolver, $this->loop);
     }
@@ -144,6 +155,9 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertTrue($callbackFired);
+
+        self::assertCount(1, $this->errors);
+        self::assertStringStartsWith('Using Promise::wait with the ReactPHP handler is deprecated', $this->errors[0][1]);
     }
 
     public function testSendFailed()
