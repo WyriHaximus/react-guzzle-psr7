@@ -8,6 +8,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use React\Dns\Resolver\Factory as DnsFactory;
 use React\Dns\Resolver\Resolver as DnsResolver;
+use React\Dns\Config\Config as DnsConfig;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\Timer\TimerInterface;
 use React\HttpClient\Client as HttpClient;
@@ -104,7 +105,9 @@ class HttpClientAdapter
     {
         if (!($dnsResolver instanceof DnsResolver)) {
             $dnsResolverFactory = new DnsFactory();
-            $dnsResolver = $dnsResolverFactory->createCached('8.8.8.8', $this->loop);
+            $config = DnsConfig::loadSystemConfigBlocking();
+            $nameserver = $config->nameservers ? reset($config->nameservers) : '8.8.8.8';
+            $dnsResolver = $dnsResolverFactory->createCached($nameserver, $this->loop);
         }
 
         $this->dnsResolver = $dnsResolver;
