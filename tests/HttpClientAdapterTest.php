@@ -13,6 +13,7 @@ namespace WyriHaximus\React\Tests\GuzzlePsr7;
 use Clue\React\Buzz\Message\ResponseException;
 use GuzzleHttp\Psr7\Request;
 use Phake;
+use React\Dns\Config\Config as DnsConfig;
 use React\Dns\Resolver\Factory as ResolverFactory;
 use React\EventLoop\Factory;
 use React\Promise\Deferred;
@@ -49,7 +50,9 @@ class HttpClientAdapterTest extends \PHPUnit_Framework_TestCase
         $this->requestArray = [];
         $this->loop = Factory::create();
         $this->requestFactory = Phake::mock('WyriHaximus\React\Guzzle\HttpClient\RequestFactory');
-        $this->dnsResolver = (new ResolverFactory())->createCached('8.8.8.8', $this->loop);
+        $config = DnsConfig::loadSystemConfigBlocking();
+        $nameserver = $config->nameservers ? reset($config->nameservers) : '8.8.8.8';
+        $this->dnsResolver = (new ResolverFactory())->createCached($nameserver, $this->loop);
         if (class_exists('React\HttpClient\Factory')) {
             $this->httpClient = Phake::partialMock(
                 'React\HttpClient\Client',
